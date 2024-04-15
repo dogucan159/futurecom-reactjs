@@ -27,7 +27,7 @@ export default function Profile() {
         <div className={'form-avatar'}>
           <img
             alt={''}
-            src={`https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/05.png`}
+            src={`https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/06.png`}
           />
         </div>
         <span>{notes}</span>
