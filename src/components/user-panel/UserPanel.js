@@ -4,6 +4,7 @@ import ContextMenu, { Position } from "devextreme-react/context-menu";
 import List from "devextreme-react/list";
 import { useAuth } from "../../contexts/auth";
 import "./UserPanel.scss";
+import { getUser } from "../../utils/auth";
 
 export default function UserPanel({ menuMode }) {
   const { user, signOut } = useAuth();
@@ -11,7 +12,8 @@ export default function UserPanel({ menuMode }) {
   const navigate = useNavigate();
 
   const navigateToProfile = useCallback(() => {
-    navigate("/profile");
+    const user = getUser();
+    navigate(`/profile/${user.baseEntityId}`);
   }, [navigate]);
   const menuItems = useMemo(
     () => [

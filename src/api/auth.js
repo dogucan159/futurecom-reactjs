@@ -84,22 +84,6 @@ export async function signIn(identificationNumber, password) {
     if (!tokenResponse.ok) {
       throw new Error(resTokenData.error_description);
     }
-    // console.log(resTokenData);
-    // const userResponse = await fetch(
-    //   `https://localhost:7224/api/users/${identificationNumber}`,
-    //   {
-    //     method: "GET",
-    //     headers: {
-    //       Authorization: "Bearer " + resTokenData.access_token,
-    //     },
-    //   }
-    // );
-
-    // const resUserData = await userResponse.json();
-
-    // if (!userResponse.ok) {
-    //   throw new Error(resUserData.error_description);
-    // }
 
     const resUserData = await getUserByIdentificationNumber(
       identificationNumber,

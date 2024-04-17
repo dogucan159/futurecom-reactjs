@@ -1,4 +1,4 @@
-import { HomePage, TasksPage, ProfilePage, UserProfilePage } from './pages';
+import { HomePage, TasksPage, UserProfilePage } from './pages';
 import { withNavigationWatcher } from './contexts/navigation';
 
 const routes = [
@@ -7,7 +7,7 @@ const routes = [
         element: TasksPage
     },
     {
-        path: '/profile',
+        path: '/profile/:selectedUserId',
         element: UserProfilePage
     },
     {

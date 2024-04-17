@@ -1,4 +1,4 @@
-import './user-profile.scss';
+import "./user-profile.scss";
 import { Button, ScrollView, Toolbar } from "devextreme-react";
 import { Item } from "devextreme-react/form";
 import withLoadPanel from "../../utils/withLoadPanel";
@@ -7,7 +7,11 @@ import { ProfileCard } from "../../components/profile-card/ProfileCard";
 import notify from "devextreme/ui/notify";
 import { useCallback, useEffect, useState } from "react";
 import { getAll as getAllInstitutions } from "../../api/institution";
-import { getToken, getUser } from "../../utils/auth";
+import { getToken } from "../../utils/auth";
+import { getAll as getAllLanguages } from "../../api/language";
+import { getAll as getAllAuditorTitles } from "../../api/auditorTitle";
+import { getById as getUserById, update as updateUser } from "../../api/user";
+import { useParams } from "react-router-dom";
 
 const copyToClipboard = (text) => (evt) => {
   window.navigator.clipboard?.writeText(text);
@@ -75,12 +79,14 @@ const UserProfileContent = ({
             <div>
               <div className="title-text">{`${profileData?.userFirstName} ${profileData?.userLastName}`}</div>
               <div className="subtitle-text with-clipboard-copy">
-                <span>Username: {profileData?.userIdentificationNumber}</span>
+                <span>
+                  Database ID: {profileData?.baseEntityId}
+                </span>
                 <Button
                   icon="copy"
                   className="copy-clipboard-button"
                   stylingMode="text"
-                  onClick={copyToClipboard(profileData?.id)}
+                  onClick={copyToClipboard(profileData?.baseEntityId)}
                   activeStateEnabled={false}
                   focusStateEnabled={false}
                   hoverStateEnabled={false}
@@ -113,6 +119,8 @@ export default function UserProfilePage() {
   const [basicInfoItems, setBasicInfoItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const { selectedUserId } = useParams();
+
   const handleContentScrolled = useCallback((reachedTop) => {
     setIsContentScrolled(!reachedTop);
   }, []);
@@ -138,60 +146,119 @@ export default function UserProfilePage() {
     setIsDataChanged(false);
   }, [savedProfileData, setSavedData]);
 
-  const onSave = useCallback(() => {
-    notify(
-      {
-        message: "Data saved",
-        position: {
-          at: "bottom center",
-          my: "bottom center",
+  const onSave = useCallback(async () => {
+    try {
+      const token = getToken();
+      const resp = await updateUser(profileData, token.access_token);
+      console.log(resp);
+      notify(
+        {
+          message: "Data saved",
+          position: {
+            at: "bottom center",
+            my: "bottom center",
+          },
         },
-      },
-      "success"
-    );
-    setIsDataChanged(false);
-    setSavedData();
-  }, [setSavedData]);
+        "success"
+      );
+      setIsDataChanged(false);
+      setSavedData();
+    } catch (error) {
+      const message = error.message;
+      notify(
+        {
+          message,
+          position: {
+            my: "center top",
+            at: "center top",
+          },
+        },
+        "error",
+        3000
+      );
+    }
+  }, [setSavedData, profileData]);
 
   useEffect(() => {
-    const fetchInstitutionData = async () => {
-      const token = getToken();
-      const result = await getAllInstitutions(token.access_token);
-      if (!result.isOk) {
-        throw new Error(result.message);
+    const fetchData = async () => {
+      try {
+        const token = getToken();
+        const userResult = await getUserById(
+          selectedUserId,
+          token.access_token
+        );        
+        const institutionResult = await getAllInstitutions(token.access_token);
+        const languageResult = await getAllLanguages(token.access_token);
+        const auditorTitleResult = await getAllAuditorTitles(
+          token.access_token
+        );
+
+        return {
+          userResult,
+          institutionResult,
+          languageResult,
+          auditorTitleResult,
+        };
+      } catch (error) {
+        throw new Error(error.message);
       }
-      return result;
     };
 
-    fetchInstitutionData()
+    fetchData()
       .then((resp) => {
-        console.log(resp);
         const basicInfoItems = [
-          { dataField: "userFirstName", colSpan: 2 },
-          { dataField: "userLastName", colSpan: 2 },
+          {
+            dataField: "userIdentificationNumber",
+            colSpan: 1,
+            label: "Username",
+          },
           {
             dataField: "userInstitutionId",
+            label: "Institution",
             editorType: "dxSelectBox",
             colSpan: 1,
             editorOptions: {
               key: "baseEntityId",
-              dataSource: resp.data,
+              dataSource: resp.institutionResult,
               displayExpr: "institutionName",
               valueExpr: "baseEntityId",
             },
           },
-          { dataField: "userIdentificationNumber", colSpan: 1 },
+          {
+            dataField: "userAuditorTitleId",
+            label: "Title",
+            editorType: "dxSelectBox",
+            colSpan: 1,
+            editorOptions: {
+              key: "baseEntityId",
+              dataSource: resp.auditorTitleResult,
+              displayExpr: "auditorTitleCode",
+              valueExpr: "baseEntityId",
+            },
+          },
+          {
+            dataField: "userLanguageId",
+            label: "Language",
+            editorType: "dxSelectBox",
+            colSpan: 1,
+            editorOptions: {
+              key: "baseEntityId",
+              dataSource: resp.languageResult,
+              displayExpr: "languageCode",
+              valueExpr: "baseEntityId",
+            },
+          },
+          { dataField: "userFirstName", colSpan: 2, label: "First Name" },
+          { dataField: "userLastName", colSpan: 2, label: "Last Name" },
         ];
 
         setBasicInfoItems(basicInfoItems);
-        const user = getUser();
-        setProfileData(user);
-        setSavedData(user);
+        setProfileData(resp.userResult);
+        setSavedData(resp.userResult);
         setIsLoading(false);
       })
       .catch((error) => {
         const message = error.message;
-        console.log(message);
         notify(
           {
             message,
@@ -204,7 +271,7 @@ export default function UserProfilePage() {
           3000
         );
       });
-  }, []);
+  }, [selectedUserId]);
 
   return (
     <div className="view-host user-profile">
