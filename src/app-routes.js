@@ -1,4 +1,4 @@
-import { HomePage, TasksPage, ProfilePage } from './pages';
+import { HomePage, TasksPage, ProfilePage, UserProfilePage } from './pages';
 import { withNavigationWatcher } from './contexts/navigation';
 
 const routes = [
@@ -8,7 +8,7 @@ const routes = [
     },
     {
         path: '/profile',
-        element: ProfilePage
+        element: UserProfilePage
     },
     {
         path: '/home',
