@@ -1,11 +1,13 @@
-import { useRef } from "react";
-import { useScreenSize, getSizeQualifier } from "../../utils/media-query";
+import "./ProfileCard.scss"
+import React, { useRef } from "react"
 import Form, {
   Item,
   Label,
   ValidationRule as ValidationRuleComponent
-} from "devextreme-react/form";
-
+} from "devextreme-react/form"
+// import { StatusSelectBox } from "../status-select-box/StatusSelectBox"
+// import { PicturedItemSelectBox } from "../pictured-item-select-box/PicturedItemSelectBox"
+import { useScreenSize, getSizeQualifier } from "../../utils/media-query"
 
 export const ProfileCard = ({
   items = [],
@@ -14,26 +16,24 @@ export const ProfileCard = ({
   cardData,
   onDataChanged,
   children,
-  wrapperCssClass,
+  wrapperCssClass
 }) => {
-  const { isXSmall } = useScreenSize();
-  const formRef = useRef(null);
-
-  const onFieldChange = (fieldName) => (value) => {
-    const isValid = formRef.current?.instance.validate().isValid;
+  const { isXSmall } = useScreenSize()
+  const formRef = useRef(null)
+  const onFieldChange = fieldName => value => {
+    const isValid = formRef.current?.instance.validate().isValid
 
     if (!isValid) {
-      return;
+      return
     }
 
     if (fieldName) {
-      cardData[fieldName] = value;
+      cardData[fieldName] = value
     }
 
-    onDataChanged(cardData);
-  };
-
-  const onFormFieldChange = (e) => onFieldChange(e.dataField)(e.value);
+    onDataChanged(cardData)
+  }
+  const onFormFieldChange = e => onFieldChange(e.dataField)(e.value)
 
   return (
     <div className={wrapperCssClass}>
@@ -59,7 +59,7 @@ export const ProfileCard = ({
                 editorOptions={{
                   stylingMode: "filled",
                   valueChangeEvent: "input",
-                  ...item.editorOptions,
+                  ...item.editorOptions
                 }}
                 colSpan={item.colSpan}
               >
@@ -67,11 +67,27 @@ export const ProfileCard = ({
                 {item.validators?.map((rule, index) => (
                   <ValidationRuleComponent key={index} type={rule.type} />
                 ))}
+                {/* {item.dataField === "status" && (
+                  <StatusSelectBox
+                    labelMode="hidden"
+                    stylingMode="filled"
+                    value={cardData[item.dataField]}
+                    onValueChange={onFieldChange(item.dataField)}
+                  />
+                )}
+                {item.dataField === "supervisor" && (
+                  <PicturedItemSelectBox
+                    label={item.label}
+                    value={cardData[item.dataField]}
+                    items={item.itemsList}
+                    onValueChange={onFieldChange(item.dataField)}
+                  />
+                )} */}
               </Item>
             ))}
           </Form>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}

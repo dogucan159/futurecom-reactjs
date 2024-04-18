@@ -1,19 +1,24 @@
 import "./user-profile.scss";
-import Toolbar, { Item } from 'devextreme-react/toolbar';
-import Button from 'devextreme-react/button';
-import ScrollView from 'devextreme-react/scroll-view';
-import withLoadPanel from "../../utils/withLoadPanel";
-import { useScreenSize } from "../../utils/media-query";
-import { ProfileCard } from "../../components/profile-card/ProfileCard";
+import React, { useState, useCallback, useEffect } from "react";
+
 import notify from "devextreme/ui/notify";
-import { useCallback, useEffect, useState } from "react";
+
+import Toolbar, { Item } from "devextreme-react/toolbar";
+import Button from "devextreme-react/button";
+import ScrollView from "devextreme-react/scroll-view";
+import { FormPhoto } from "../../components";
+import { ProfileCard } from "../../components/profile-card/ProfileCard";
+import { withLoadPanel } from "../../utils/withLoadPanel";
+import { useScreenSize } from "../../utils/media-query";
+import { ChangeProfilePasswordForm } from "../../components/change-profile-password-form/ChangeProfilePasswordForm";
+import { useParams } from "react-router-dom";
 import { getAll as getAllInstitutions } from "../../api/institution";
 import { getToken } from "../../utils/auth";
 import { getAll as getAllLanguages } from "../../api/language";
 import { getAll as getAllAuditorTitles } from "../../api/auditorTitle";
 import { getById as getUserById, update as updateUser } from "../../api/user";
-import { useParams } from "react-router-dom";
-import { ChangeProfilePasswordForm } from "../../components/change-profile-password-form/ChangeProfilePasswordForm";
+
+const PROFILE_ID = 22;
 
 const copyToClipboard = (text) => (evt) => {
   window.navigator.clipboard?.writeText(text);
@@ -30,10 +35,14 @@ const copyToClipboard = (text) => (evt) => {
   );
 };
 
+const formatPhone = (value) => {
+  return String(value).replace(/(\d{3})(\d{3})(\d{4})/, "+1($1)$2-$3");
+};
+
 const UserProfileContent = ({
   basicInfoItems,
-  //   contactItems,
-  //   addressItems,
+  contactItems,
+  addressItems,
   profileData,
   handleDataChanged,
   handleChangePasswordClick,
@@ -60,28 +69,11 @@ const UserProfileContent = ({
           onDataChanged={handleDataChanged}
         >
           <div className="basic-info-top-item profile-card-top-item">
-            {/*sonra ele alinacak <FormPhoto link={profileData?.image} editable size={80} /> */}
-            {/* <div className="form-photo-view">
-              <div
-                className="form-photo"
-                style={{
-                  width: 80,
-                  height: 80,
-                  maxHeight: 80,
-                  backgroundImage: `url(${"https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/05.png"}) no-repeat #fff`,
-                }}
-              ></div>
-            </div> */}
-            <div className={"form-avatar"}>
-              <img
-                alt={""}
-                src={`https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/images/employees/05.png`}
-              />
-            </div>
+            <FormPhoto link="" editable size={80} />
             <div>
               <div className="title-text">{`${profileData?.userFirstName} ${profileData?.userLastName}`}</div>
               <div className="subtitle-text with-clipboard-copy">
-                <span>Database ID: {profileData?.baseEntityId}</span>
+                <span>Username: {profileData?.userIdentificationNumber}</span>
                 <Button
                   icon="copy"
                   className="copy-clipboard-button"
@@ -102,6 +94,57 @@ const UserProfileContent = ({
             </div>
           </div>
         </ProfileCard>
+
+        {/* <ProfileCard
+          wrapperCssClass="profile-card contacts-card"
+          title="Contacts"
+          cardData={profileData}
+          items={contactItems}
+          onDataChanged={handleDataChanged}
+        >
+          <div className="profile-card-top-item">
+            <div className="image-wrapper">
+              <i className="dx-icon dx-icon-mention" />
+            </div>
+            <div>
+              <div className="title-text">
+                {formatPhone(profileData?.phone)}
+              </div>
+              <div className="subtitle-text with-clipboard-copy">
+                {profileData?.email}
+                <Button
+                  icon="copy"
+                  className="copy-clipboard-button"
+                  stylingMode="text"
+                  onClick={copyToClipboard(profileData?.email)}
+                  activeStateEnabled={false}
+                  focusStateEnabled={false}
+                  hoverStateEnabled={false}
+                />
+              </div>
+            </div>
+          </div>
+        </ProfileCard>
+
+        <ProfileCard
+          wrapperCssClass="profile-card address-card"
+          title="Address"
+          cardData={profileData}
+          items={addressItems}
+          onDataChanged={handleDataChanged}
+        >
+          <div className="profile-card-top-item">
+            <div className="image-wrapper">
+              <i className="dx-icon dx-icon-map" />
+            </div>
+            <div>
+              <div className="title-text">
+                {profileData?.address}, {profileData?.city},{" "}
+                {profileData?.state}, {profileData?.country}
+              </div>
+            </div>
+          </div>
+        </ProfileCard> */}
       </div>
     </ScrollView>
   );
@@ -109,21 +152,18 @@ const UserProfileContent = ({
 
 const UserProfileContentWithLoadPanel = withLoadPanel(UserProfileContent);
 
-export default function UserProfilePage() {
-  const [isContentScrolled, setIsContentScrolled] = useState(false);
-  const [isDataChanged, setIsDataChanged] = useState(false);
-  const [isChangePasswordPopupOpened, setIsChangedPasswordPopupOpened] =
-    useState(false);
+export const UserProfilePage = () => {
   const [profileData, setProfileData] = useState();
   const [savedProfileData, setSavedProfileData] = useState();
-  const [basicInfoItems, setBasicInfoItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [isChangePasswordPopupOpened, setIsChangedPasswordPopupOpened] =
+    useState(false);
+  const [isDataChanged, setIsDataChanged] = useState(false);
+  const [basicInfoItems, setBasicInfoItems] = useState([]);
+  const [contactItems, setContactItems] = useState([]);
+  const [addressItems, setAddressItems] = useState([]);
+  const [isContentScrolled, setIsContentScrolled] = useState(false);
   const { selectedUserId } = useParams();
-
-  const handleContentScrolled = useCallback((reachedTop) => {
-    setIsContentScrolled(!reachedTop);
-  }, []);
 
   const dataChanged = useCallback(() => {
     setIsDataChanged(true);
@@ -131,6 +171,10 @@ export default function UserProfilePage() {
 
   const changePassword = useCallback(() => {
     setIsChangedPasswordPopupOpened(true);
+  }, []);
+
+  const handleContentScrolled = useCallback((reachedTop) => {
+    setIsContentScrolled(!reachedTop);
   }, []);
 
   const setSavedData = useCallback(
@@ -304,8 +348,8 @@ export default function UserProfilePage() {
         </Toolbar>
         <UserProfileContentWithLoadPanel
           basicInfoItems={basicInfoItems}
-          //   contactItems={contactItems}
-          //   addressItems={addressItems}
+          contactItems={contactItems}
+          addressItems={addressItems}
           profileData={profileData}
           handleChangePasswordClick={changePassword}
           handleDataChanged={dataChanged}
@@ -318,10 +362,11 @@ export default function UserProfilePage() {
           }}
         />
       </div>
+
       <ChangeProfilePasswordForm
         visible={isChangePasswordPopupOpened}
         setVisible={setIsChangedPasswordPopupOpened}
       />
     </div>
   );
-}
+};

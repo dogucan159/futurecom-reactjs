@@ -46,7 +46,7 @@ export default function SideNavOuterToolbar({ title, children }) {
   const [patchCssClass, onMenuReady] = useMenuPatch();
   const [popupVisible, setPopupVisible] = useState(false);
   const { signOut, refreshToken } = useAuth(false);
-  const [menuStatus, setMenuStatus] = useState(null)
+  const [menuStatus, setMenuStatus] = useState(null);
 
   useEffect(() => {
     const tokenData = getToken();
@@ -63,63 +63,58 @@ export default function SideNavOuterToolbar({ title, children }) {
   const getDefaultMenuOpenState = useCallback(
     () => (isLarge ? MenuStatus.Opened : MenuStatus.Closed),
     [isLarge]
-  )
+  );
   const getMenuOpenState = useCallback(
-    status => {
+    (status) => {
       if (status === null) {
-        return getDefaultMenuOpenState()
+        return getDefaultMenuOpenState();
       }
-  
-      return status
+
+      return status;
     },
     [getDefaultMenuOpenState]
-  )
-  
+  );
+
   const getMenuStatus = useCallback(
-    status => {
-      return status === getDefaultMenuOpenState() ? null : status
+    (status) => {
+      return status === getDefaultMenuOpenState() ? null : status;
     },
     [getDefaultMenuOpenState]
-  )
-  
+  );
+
   const changeMenuStatus = useCallback(
-    reducerFn => {
-      setMenuStatus(prevMenuStatus =>
+    (reducerFn) => {
+      setMenuStatus((prevMenuStatus) =>
         getMenuStatus(
           reducerFn(getMenuOpenState(prevMenuStatus)) ?? prevMenuStatus
         )
-      )
+      );
     },
     [getMenuOpenState, getMenuStatus]
-  )
-  
+  );
+
   const toggleMenu = useCallback(
     ({ event }) => {
-      changeMenuStatus(prevStatus =>
-        prevStatus === MenuStatus.Closed
-          ? MenuStatus.Opened
-          : MenuStatus.Closed
-      )
-      event?.stopPropagation()
+      changeMenuStatus((prevStatus) =>
+        prevStatus === MenuStatus.Closed ? MenuStatus.Opened : MenuStatus.Closed
+      );
+      event?.stopPropagation();
     },
     [changeMenuStatus]
-  )
-  
-  const temporaryOpenMenu = useCallback(() => {
-    changeMenuStatus(prevStatus =>
-      prevStatus === MenuStatus.Closed ? MenuStatus.TemporaryOpened : null
-    )
-  }, [changeMenuStatus])
-  
-  const onOutsideClick = useCallback(() => {
-    changeMenuStatus(prevStatus =>
-      prevStatus !== MenuStatus.Closed && !isLarge
-        ? MenuStatus.Closed
-        : null
-    )
-    return !isLarge
-  }, [isLarge, changeMenuStatus])  
+  );
 
+  const temporaryOpenMenu = useCallback(() => {
+    changeMenuStatus((prevStatus) =>
+      prevStatus === MenuStatus.Closed ? MenuStatus.TemporaryOpened : null
+    );
+  }, [changeMenuStatus]);
+
+  const onOutsideClick = useCallback(() => {
+    changeMenuStatus((prevStatus) =>
+      prevStatus !== MenuStatus.Closed && !isLarge ? MenuStatus.Closed : null
+    );
+    return !isLarge;
+  }, [isLarge, changeMenuStatus]);
 
   const onNavigationChanged = useCallback(
     ({ itemData: { path }, event, node }) => {
@@ -128,19 +123,18 @@ export default function SideNavOuterToolbar({ title, children }) {
         !path ||
         node?.selected
       ) {
-        event?.preventDefault()
-        return
+        event?.preventDefault();
+        return;
       }
-  
-      navigate(path)
+
+      navigate(path);
       if (!isLarge || menuStatus === MenuStatus.TemporaryOpened) {
-        setMenuStatus(getMenuStatus(MenuStatus.Closed))
-        event?.stopPropagation()
+        setMenuStatus(getMenuStatus(MenuStatus.Closed));
+        event?.stopPropagation();
       }
     },
     [navigate, menuStatus, isLarge]
-  )
-  
+  );
 
   const refreshTokenData = useCallback(async () => {
     const result = await refreshToken();
@@ -218,17 +212,19 @@ export default function SideNavOuterToolbar({ title, children }) {
         title={title}
       />
 
-<Drawer
-        className={['drawer layout-body', patchCssClass].join(' ')}
-        position='before'
+      <Drawer
+        className={["drawer layout-body", patchCssClass].join(" ")}
+        position="before"
         closeOnOutsideClick={onOutsideClick}
-        openedStateMode={isLarge ? 'shrink' : 'overlap'}
-        revealMode={isXSmall ? 'slide' : 'expand'}
+        openedStateMode={isLarge ? "shrink" : "overlap"}
+        revealMode={isXSmall ? "slide" : "expand"}
         minSize={isXSmall ? 0 : 48}
         maxSize={250}
         shading={isLarge ? false : true}
-        opened={getMenuOpenState(menuStatus) === MenuStatus.Closed ? false : true}
-        template='menu'
+        opened={
+          getMenuOpenState(menuStatus) === MenuStatus.Closed ? false : true
+        }
+        template="menu"
       >
         <div className={"content"}>
           {React.Children.map(children, (item) => {
@@ -247,5 +243,3 @@ export default function SideNavOuterToolbar({ title, children }) {
     </div>
   );
 }
-
-

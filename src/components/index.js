@@ -6,3 +6,4 @@ export { default as ResetPasswordForm } from "./reset-password-form/ResetPasswor
 export { default as CreateAccountForm } from "./create-account-form/CreateAccountForm";
 export { default as ChangePasswordForm } from "./change-password-form/ChangePasswordForm";
 export { SideNavigationMenu } from "./side-navigation-menu/SideNavigationMenu";
+export { FormPhoto } from './utils/form-photo/FormPhoto';
