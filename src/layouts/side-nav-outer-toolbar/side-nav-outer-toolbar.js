@@ -1,6 +1,5 @@
 import Drawer from "devextreme-react/drawer";
-import ScrollView from "devextreme-react/scroll-view";
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Header, SideNavigationMenu, Footer } from "../../components";
 import "./side-nav-outer-toolbar.scss";
@@ -12,6 +11,12 @@ import { Popup } from "devextreme-react";
 import { ToolbarItem } from "devextreme-react/cjs/data-grid";
 import notify from "devextreme/ui/notify";
 import { getToken, getTokenDuration } from "../../utils/auth";
+
+const MenuStatus = {
+  Closed: 1,
+  Opened: 2,
+  TemporaryOpened: 3,
+};
 
 function getRemainingTimeText(diff) {
   // get total seconds between the times
@@ -36,15 +41,12 @@ function getRemainingTimeText(diff) {
 }
 
 export default function SideNavOuterToolbar({ title, children }) {
-  const scrollViewRef = useRef(null);
   const navigate = useNavigate();
   const { isXSmall, isLarge } = useScreenSize();
   const [patchCssClass, onMenuReady] = useMenuPatch();
-  const [menuStatus, setMenuStatus] = useState(
-    isLarge ? MenuStatus.Opened : MenuStatus.Closed
-  );
   const [popupVisible, setPopupVisible] = useState(false);
   const { signOut, refreshToken } = useAuth(false);
+  const [menuStatus, setMenuStatus] = useState(null)
 
   useEffect(() => {
     const tokenData = getToken();
@@ -58,49 +60,87 @@ export default function SideNavOuterToolbar({ title, children }) {
     }
   }, [popupVisible]);
 
-  const toggleMenu = useCallback(({ event }) => {
-    setMenuStatus((prevMenuStatus) =>
-      prevMenuStatus === MenuStatus.Closed
-        ? MenuStatus.Opened
-        : MenuStatus.Closed
-    );
-    event.stopPropagation();
-  }, []);
-
+  const getDefaultMenuOpenState = useCallback(
+    () => (isLarge ? MenuStatus.Opened : MenuStatus.Closed),
+    [isLarge]
+  )
+  const getMenuOpenState = useCallback(
+    status => {
+      if (status === null) {
+        return getDefaultMenuOpenState()
+      }
+  
+      return status
+    },
+    [getDefaultMenuOpenState]
+  )
+  
+  const getMenuStatus = useCallback(
+    status => {
+      return status === getDefaultMenuOpenState() ? null : status
+    },
+    [getDefaultMenuOpenState]
+  )
+  
+  const changeMenuStatus = useCallback(
+    reducerFn => {
+      setMenuStatus(prevMenuStatus =>
+        getMenuStatus(
+          reducerFn(getMenuOpenState(prevMenuStatus)) ?? prevMenuStatus
+        )
+      )
+    },
+    [getMenuOpenState, getMenuStatus]
+  )
+  
+  const toggleMenu = useCallback(
+    ({ event }) => {
+      changeMenuStatus(prevStatus =>
+        prevStatus === MenuStatus.Closed
+          ? MenuStatus.Opened
+          : MenuStatus.Closed
+      )
+      event?.stopPropagation()
+    },
+    [changeMenuStatus]
+  )
+  
   const temporaryOpenMenu = useCallback(() => {
-    setMenuStatus((prevMenuStatus) =>
-      prevMenuStatus === MenuStatus.Closed
-        ? MenuStatus.TemporaryOpened
-        : prevMenuStatus
-    );
-  }, []);
-
+    changeMenuStatus(prevStatus =>
+      prevStatus === MenuStatus.Closed ? MenuStatus.TemporaryOpened : null
+    )
+  }, [changeMenuStatus])
+  
   const onOutsideClick = useCallback(() => {
-    setMenuStatus((prevMenuStatus) =>
-      prevMenuStatus !== MenuStatus.Closed && !isLarge
+    changeMenuStatus(prevStatus =>
+      prevStatus !== MenuStatus.Closed && !isLarge
         ? MenuStatus.Closed
-        : prevMenuStatus
-    );
-    return menuStatus === MenuStatus.Closed ? true : false;
-  }, [isLarge, menuStatus]);
+        : null
+    )
+    return !isLarge
+  }, [isLarge, changeMenuStatus])  
+
 
   const onNavigationChanged = useCallback(
-    ({ itemData, event, node }) => {
-      if (menuStatus === MenuStatus.Closed || !itemData.path || node.selected) {
-        event.preventDefault();
-        return;
+    ({ itemData: { path }, event, node }) => {
+      if (
+        getMenuOpenState(menuStatus) === MenuStatus.Closed ||
+        !path ||
+        node?.selected
+      ) {
+        event?.preventDefault()
+        return
       }
-
-      navigate(itemData.path);
-      scrollViewRef.current.instance.scrollTo(0);
-
+  
+      navigate(path)
       if (!isLarge || menuStatus === MenuStatus.TemporaryOpened) {
-        setMenuStatus(MenuStatus.Closed);
-        event.stopPropagation();
+        setMenuStatus(getMenuStatus(MenuStatus.Closed))
+        event?.stopPropagation()
       }
     },
     [navigate, menuStatus, isLarge]
-  );
+  )
+  
 
   const refreshTokenData = useCallback(async () => {
     const result = await refreshToken();
@@ -170,32 +210,30 @@ export default function SideNavOuterToolbar({ title, children }) {
         />
         <p>Token geçerlilik süresi dolmuştur..</p>
       </Popup>
-      <Header menuToggleEnabled toggleMenu={toggleMenu} title={title} />
-      <Drawer
-        className={["drawer", patchCssClass].join(" ")}
-        position={"before"}
+
+      <Header
+        className="layout-header"
+        menuToggleEnabled
+        toggleMenu={toggleMenu}
+        title={title}
+      />
+
+<Drawer
+        className={['drawer layout-body', patchCssClass].join(' ')}
+        position='before'
         closeOnOutsideClick={onOutsideClick}
-        openedStateMode={isLarge ? "shrink" : "overlap"}
-        revealMode={isXSmall ? "slide" : "expand"}
-        minSize={isXSmall ? 0 : 60}
+        openedStateMode={isLarge ? 'shrink' : 'overlap'}
+        revealMode={isXSmall ? 'slide' : 'expand'}
+        minSize={isXSmall ? 0 : 48}
         maxSize={250}
         shading={isLarge ? false : true}
-        opened={menuStatus === MenuStatus.Closed ? false : true}
-        template={"menu"}
+        opened={getMenuOpenState(menuStatus) === MenuStatus.Closed ? false : true}
+        template='menu'
       >
-        <div className={"container"}>
-          <ScrollView ref={scrollViewRef} className={"layout-body with-footer"}>
-            <div className={"content"}>
-              {React.Children.map(children, (item) => {
-                return item.type !== Footer && item;
-              })}
-            </div>
-            <div className={"content-block"}>
-              {React.Children.map(children, (item) => {
-                return item.type === Footer && item;
-              })}
-            </div>
-          </ScrollView>
+        <div className={"content"}>
+          {React.Children.map(children, (item) => {
+            return item.type !== Footer && item;
+          })}
         </div>
         <Template name={"menu"}>
           <SideNavigationMenu
@@ -210,8 +248,4 @@ export default function SideNavOuterToolbar({ title, children }) {
   );
 }
 
-const MenuStatus = {
-  Closed: 1,
-  Opened: 2,
-  TemporaryOpened: 3,
-};
+

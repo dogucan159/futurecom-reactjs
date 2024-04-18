@@ -1,41 +1,40 @@
-@import "../../themes/generated/variables.base.scss";
-@import "../../dx-styles.scss";
+@use "../../variables.scss" as *;
 
 .header-component {
   flex: 0 0 auto;
   z-index: 1;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05), 0 0 4px rgba(0, 0, 0, 0.15);
+  padding: 10px 0;
+  background-color: var(--base-bg);
 
-  .dx-toolbar .dx-toolbar-item.menu-button>.dx-toolbar-item-content .dx-icon {
-    color: $base-accent;
-  }
-}
+  .dx-toolbar.header-toolbar {
+    padding-right: var(--content-padding);
 
-.dx-toolbar.header-toolbar .dx-toolbar-items-container .dx-toolbar-after {
-  padding: 0 40px;
+    .global-search-box {
+      padding-right: 11px;
+    }
 
-  .screen-x-small & {
-    padding: 0 20px;
-  }
-}
+    .messages {
+      position: relative;
 
-.dx-toolbar .dx-toolbar-item.dx-toolbar-button.menu-button {
-  width: $side-panel-min-width;
-  text-align: center;
-  padding: 0;
-}
+      .dx-badge {
+        position: absolute;
+        background-color: red;
+        color: white;
+        right: -10%;
+        top: -10%;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        border-radius: 10px;
+        justify-content: center;
+      }
+    }
 
-.header-title .dx-item-content {
-  padding: 0;
-  margin: 0;
-}
-
-.dx-theme-generic {
-  .dx-toolbar {
-    padding: 10px 0;
-  }
-
-  .user-button>.dx-button-content {
-    padding: 3px;
+    .dx-toolbar-item.menu-button {
+      width: var(--side-panel-min-width);
+      text-align: center;
+      padding: 0;
+    }
   }
 }

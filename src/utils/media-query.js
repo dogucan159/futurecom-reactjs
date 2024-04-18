@@ -1,74 +1,77 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react"
 
 export const useScreenSize = () => {
-  const [screenSize, setScreenSize] = useState(getScreenSize());
+  const [screenSize, setScreenSize] = useState(getScreenSize())
   const onSizeChanged = useCallback(() => {
-    setScreenSize(getScreenSize());
-  }, []);
+    setScreenSize(getScreenSize())
+  }, [])
 
   useEffect(() => {
-    subscribe(onSizeChanged);
+    subscribe(onSizeChanged)
 
     return () => {
-      unsubscribe(onSizeChanged);
-    };
-  }, [onSizeChanged]);
+      unsubscribe(onSizeChanged)
+    }
+  }, [onSizeChanged])
 
-  return screenSize;
-};
+  return screenSize
+}
 
 export const useScreenSizeClass = () => {
-  const screenSize = useScreenSize();
+  const screenSize = useScreenSize()
 
   if (screenSize.isLarge) {
-    return "screen-large";
+    return "screen-large"
   }
 
   if (screenSize.isMedium) {
-    return "screen-medium";
+    return "screen-medium"
   }
 
   if (screenSize.isSmall) {
-    return "screen-small";
+    return "screen-small"
   }
 
-  return "screen-x-small";
-};
+  return "screen-x-small"
+}
 
-let handlers = [];
-const xSmallMedia = window.matchMedia("(max-width: 599.99px)");
+let handlers = []
+
+const xSmallMedia = window.matchMedia("(max-width: 575.98px)")
 const smallMedia = window.matchMedia(
-  "(min-width: 600px) and (max-width: 959.99px)"
-);
+  "(min-width: 576px) and (max-width: 991.98px)"
+)
 const mediumMedia = window.matchMedia(
-  "(min-width: 960px) and (max-width: 1279.99px)"
-);
-const largeMedia = window.matchMedia("(min-width: 1280px)");
+  "(min-width: 992px) and (max-width: 1199.98px)"
+)
+const largeMedia = window.matchMedia("(min-width: 1200px)")
 
-[xSmallMedia, smallMedia, mediumMedia, largeMedia].forEach((media) => {
-  media.addListener((e) => {
-    e.matches && handlers.forEach((handler) => handler());
-  });
-});
+;[xSmallMedia, smallMedia, mediumMedia, largeMedia].forEach(media => {
+  media.addEventListener("change", e => {
+    if (e.matches) {
+      handlers.forEach(handler => handler())
+    }
+  })
+})
 
-const subscribe = (handler) => handlers.push(handler);
+const subscribe = handler => handlers.push(handler)
 
-const unsubscribe = (handler) => {
-  handlers = handlers.filter((item) => item !== handler);
-};
+const unsubscribe = handler => {
+  handlers = handlers.filter(item => item !== handler)
+}
 
 function getScreenSize() {
   return {
     isXSmall: xSmallMedia.matches,
     isSmall: smallMedia.matches,
     isMedium: mediumMedia.matches,
-    isLarge: largeMedia.matches,
-  };
+    isLarge: largeMedia.matches
+  }
 }
 
 export function getSizeQualifier(width) {
-  if (width <= 420) return "xs";
-  if (width <= 992) return "sm";
-  if (width < 1200) return "md";
-  return "lg";
+  if (width <= 420) return "xs"
+  if (width <= 992) return "sm"
+  if (width < 1200) return "md"
+  return "lg"
 }

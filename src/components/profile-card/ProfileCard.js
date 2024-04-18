@@ -3,8 +3,7 @@ import { useScreenSize, getSizeQualifier } from "../../utils/media-query";
 import Form, {
   Item,
   Label,
-  ValidationRule as ValidationRuleComponent,
-  FormTypes,
+  ValidationRule as ValidationRuleComponent
 } from "devextreme-react/form";
 
 

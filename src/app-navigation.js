@@ -1,5 +1,3 @@
-import { getUser } from "./utils/auth";
-
 export const navigation = [
   {
     text: "Home",
@@ -12,7 +10,8 @@ export const navigation = [
     items: [
       {
         text: "Profile",
-        path: `/profile/${getUser().baseEntityId}`,
+        path: "/profile",
+
       },
       {
         text: "User Logs",

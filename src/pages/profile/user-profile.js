@@ -1,6 +1,7 @@
 import "./user-profile.scss";
-import { Button, ScrollView, Toolbar } from "devextreme-react";
-import { Item } from "devextreme-react/form";
+import Toolbar, { Item } from 'devextreme-react/toolbar';
+import Button from 'devextreme-react/button';
+import ScrollView from 'devextreme-react/scroll-view';
 import withLoadPanel from "../../utils/withLoadPanel";
 import { useScreenSize } from "../../utils/media-query";
 import { ProfileCard } from "../../components/profile-card/ProfileCard";
@@ -12,6 +13,7 @@ import { getAll as getAllLanguages } from "../../api/language";
 import { getAll as getAllAuditorTitles } from "../../api/auditorTitle";
 import { getById as getUserById, update as updateUser } from "../../api/user";
 import { useParams } from "react-router-dom";
+import { ChangeProfilePasswordForm } from "../../components/change-profile-password-form/ChangeProfilePasswordForm";
 
 const copyToClipboard = (text) => (evt) => {
   window.navigator.clipboard?.writeText(text);
@@ -79,9 +81,7 @@ const UserProfileContent = ({
             <div>
               <div className="title-text">{`${profileData?.userFirstName} ${profileData?.userLastName}`}</div>
               <div className="subtitle-text with-clipboard-copy">
-                <span>
-                  Database ID: {profileData?.baseEntityId}
-                </span>
+                <span>Database ID: {profileData?.baseEntityId}</span>
                 <Button
                   icon="copy"
                   className="copy-clipboard-button"
@@ -150,7 +150,6 @@ export default function UserProfilePage() {
     try {
       const token = getToken();
       const resp = await updateUser(profileData, token.access_token);
-      console.log(resp);
       notify(
         {
           message: "Data saved",
@@ -186,7 +185,7 @@ export default function UserProfilePage() {
         const userResult = await getUserById(
           selectedUserId,
           token.access_token
-        );        
+        );
         const institutionResult = await getAllInstitutions(token.access_token);
         const languageResult = await getAllLanguages(token.access_token);
         const auditorTitleResult = await getAllAuditorTitles(
@@ -319,6 +318,10 @@ export default function UserProfilePage() {
           }}
         />
       </div>
+      <ChangeProfilePasswordForm
+        visible={isChangePasswordPopupOpened}
+        setVisible={setIsChangedPasswordPopupOpened}
+      />
     </div>
   );
 }

@@ -1,17 +1,20 @@
-import React from 'react';
-import ScrollView from 'devextreme-react/scroll-view';
-import './single-card.scss';
+import React from "react"
 
+import ScrollView from "devextreme-react/scroll-view"
 
-export default function SingleCard({ title, description, children }) {
+import "./single-card.scss"
+import { CardAuth } from "../../components/card-auth/CardAuth"
+
+export const SingleCard = ({ title, description, children }) => {
   return (
-    <ScrollView height={'100%'} width={'100%'} className={'with-footer single-card'}>
-      <div className={'dx-card content'}>
-        <div className={'header'}>
-          <div className={'title'}>{title}</div>
-          <div className={'description'}>{description}</div>
-        </div>
+    <ScrollView
+      height="100%"
+      width="100%"
+      className="view-wrapper-scroll single-card"
+    >
+      <CardAuth title={title} description={description}>
         {children}
-      </div>
+      </CardAuth>
     </ScrollView>
-)}
+  )
+}
