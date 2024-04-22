@@ -31,11 +31,11 @@ export async function refreshTokenData() {
       throw new Error(resTokenData.error_description);
     }
 
-    // const expiration = new Date();
-    // const hour = resTokenData.expires_in / 3600;
-    // expiration.setHours(expiration.getHours() + hour);
     const expiration = new Date();
-    expiration.setMinutes(expiration.getMinutes() + 1);
+    const hour = resTokenData.expires_in / 3600;
+    expiration.setHours(expiration.getHours() + hour);
+    // const expiration = new Date();
+    // expiration.setMinutes(expiration.getMinutes() + 1);
     localStorage.setItem(
       "session-token",
       JSON.stringify({ ...resTokenData, expiration })
@@ -91,11 +91,11 @@ export async function signIn(identificationNumber, password) {
     );
 
     localStorage.setItem("session-user", JSON.stringify(resUserData));
-    // const expiration = new Date();
-    // const hour = resTokenData.expires_in / 3600;
-    // expiration.setHours(expiration.getHours() + hour);
     const expiration = new Date();
-    expiration.setMinutes(expiration.getMinutes() + 1);
+    const hour = resTokenData.expires_in / 3600;
+    expiration.setHours(expiration.getHours() + hour);
+    // const expiration = new Date();
+    // expiration.setMinutes(expiration.getMinutes() + 1);
     localStorage.setItem(
       "session-token",
       JSON.stringify({ ...resTokenData, expiration })

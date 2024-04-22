@@ -18,6 +18,7 @@ export const ChangeProfilePasswordForm = ({
   setVisible,
   currentUserId,
 }) => {
+  const childRef = useRef();
   const confirmField = useRef(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -109,6 +110,7 @@ export const ChangeProfilePasswordForm = ({
           },
           "success"
         );
+        childRef.current.close();
       } catch (error) {
         const message = `An error occurred while updating the password:  ${error.message}`;
         notify(message, "error", 7000);
@@ -119,6 +121,7 @@ export const ChangeProfilePasswordForm = ({
 
   return (
     <FormPopup
+      ref={childRef}
       title="Change Password"
       visible={visible}
       width={360}
