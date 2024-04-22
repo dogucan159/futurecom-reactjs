@@ -193,7 +193,7 @@ export const UserProfilePage = () => {
   const onSave = useCallback(async () => {
     try {
       const token = getToken();
-      const resp = await updateUser(profileData, token.access_token);
+      await updateUser(profileData, token.access_token);
       notify(
         {
           message: "Data saved",
@@ -207,7 +207,7 @@ export const UserProfilePage = () => {
       setIsDataChanged(false);
       setSavedData();
     } catch (error) {
-      const message = error.message;
+      const message = `An error occurred while updating the user:  ${error.message}`;
       notify(
         {
           message,
@@ -217,7 +217,7 @@ export const UserProfilePage = () => {
           },
         },
         "error",
-        3000
+        10000
       );
     }
   }, [setSavedData, profileData]);
@@ -364,6 +364,7 @@ export const UserProfilePage = () => {
       </div>
 
       <ChangeProfilePasswordForm
+        currentUserId={selectedUserId}
         visible={isChangePasswordPopupOpened}
         setVisible={setIsChangedPasswordPopupOpened}
       />

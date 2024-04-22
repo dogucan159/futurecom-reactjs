@@ -1,5 +1,7 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useRef, useCallback } from "react"
+
+import { Link, useNavigate } from "react-router-dom"
+
 import Form, {
   Item,
   Label,
@@ -7,41 +9,46 @@ import Form, {
   ButtonOptions,
   RequiredRule,
   EmailRule
-} from 'devextreme-react/form';
-import LoadIndicator from 'devextreme-react/load-indicator';
-import notify from 'devextreme/ui/notify';
-import { resetPassword } from '../../api/auth';
-import './ResetPasswordForm.scss';
+} from "devextreme-react/form"
+import LoadIndicator from "devextreme-react/load-indicator"
+import notify from "devextreme/ui/notify"
 
-const notificationText = 'We\'ve sent a link to reset your password. Check your inbox.';
+import "./ResetPasswordForm.scss"
+import { resetPassword } from "../../api/auth"
 
-export default function ResetPasswordForm() {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const formData = useRef({ email: '', password: '' });
+const notificationText =
+  "We've sent a link to reset your password. Check your inbox."
 
-  const onSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    const { email } = formData.current;
-    setLoading(true);
+export const ResetPasswordForm = ({ signInLink, buttonLink }) => {
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
+  const formData = useRef({ email: "", password: "" })
 
-    const result = await resetPassword(email);
-    setLoading(false);
+  const onSubmit = useCallback(
+    async e => {
+      e.preventDefault()
+      const { email } = formData.current
+      setLoading(true)
 
-    if (result.isOk) {
-      navigate('/login');
-      notify(notificationText, 'success', 2500);
-    } else {
-      notify(result.message, 'error', 2000);
-    }
-  }, [navigate]);
+      const result = await resetPassword(email)
+      setLoading(false)
+
+      if (result.isOk) {
+        navigate(buttonLink)
+        notify(notificationText, "success", 2500)
+      } else {
+        notify(result.message, "error", 2000)
+      }
+    },
+    [navigate]
+  )
 
   return (
-    <form className={'reset-password-form'} onSubmit={onSubmit}>
+    <form className="reset-password-form" onSubmit={onSubmit}>
       <Form formData={formData.current} disabled={loading}>
         <Item
-          dataField={'email'}
-          editorType={'dxTextBox'}
+          dataField="email"
+          editorType="dxTextBox"
           editorOptions={emailEditorOptions}
         >
           <RequiredRule message="Email is required" />
@@ -51,28 +58,31 @@ export default function ResetPasswordForm() {
         <ButtonItem>
           <ButtonOptions
             elementAttr={submitButtonAttributes}
-            width={'100%'}
-            type={'default'}
-            useSubmitBehavior={true}
+            width="100%"
+            type="default"
+            useSubmitBehavior
           >
             <span className="dx-button-text">
-              {
-                loading
-                  ? <LoadIndicator width={'24px'} height={'24px'} visible={true} />
-                  : 'Reset my password'
-              }
+              {loading ? (
+                <LoadIndicator width="24px" height="24px" visible />
+              ) : (
+                "Reset my password"
+              )}
             </span>
           </ButtonOptions>
         </ButtonItem>
-        <Item>
-          <div className={'login-link'}>
-            Return to <Link to={'/login'}>Sign In</Link>
-          </div>
-        </Item>
       </Form>
+      <div className="login-link">
+        Return to <Link to={signInLink}>Sign In</Link>
+      </div>
     </form>
-  );
+  )
 }
 
-const emailEditorOptions = { stylingMode: 'filled', placeholder: 'Email', mode: 'email' };
-const submitButtonAttributes = { class: 'submit-button' };
+const emailEditorOptions = {
+  stylingMode: "filled",
+  placeholder: "Email",
+  mode: "email",
+  value: ""
+}
+const submitButtonAttributes = { class: "submit-button" }

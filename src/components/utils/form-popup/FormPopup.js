@@ -1,9 +1,9 @@
-import './FormPopup.scss';
+import "./FormPopup.scss";
 import { useCallback, useRef } from "react";
 import { useScreenSize } from "../../../utils/media-query";
-import { Button } from 'devextreme-react';
-import ValidationGroup from 'devextreme-react/validation-group';
-import { Popup, ToolbarItem } from 'devextreme-react/popup';
+import { Button } from "devextreme-react";
+import ValidationGroup from "devextreme-react/validation-group";
+import { Popup, ToolbarItem } from "devextreme-react/popup";
 
 export const FormPopup = ({
   title,
@@ -19,21 +19,21 @@ export const FormPopup = ({
   const { isXSmall } = useScreenSize();
   const validationGroup = useRef(null);
 
-  const close = () => {
+  const close = useCallback(() => {
     validationGroup.current?.instance.reset();
     setVisible(false);
-  };
+  }, [setVisible]);
 
   const onCancelClick = useCallback(() => {
     close();
-  }, [close, validationGroup]);
+  }, [close]);
 
   const onSaveClick = useCallback(() => {
     if (!validationGroup.current?.instance.validate().isValid) return;
 
     onSave && onSave();
     close();
-  }, [validationGroup]);
+  }, [validationGroup, onSave, close]);
 
   return (
     <Popup

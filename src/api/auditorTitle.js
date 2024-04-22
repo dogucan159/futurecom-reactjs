@@ -9,17 +9,16 @@ export async function getAll(access_token) {
           },
         }
       );
-  
       const resData = await response.json();
       if (!response.ok) {
-        throw new Error(resData.error_description);
-      }
+        throw new Error(
+          response.status === 401
+            ? "401 - Unauthorized!!!"
+            : `${resData.StatusCode} - ${resData.Message}`
+        );
+      }      
       return resData;
     } catch (error) {
-      // return {
-      //   isOk: false,
-      //   message: error.message,
-      // };
       throw new Error(error.message);
     }
   }

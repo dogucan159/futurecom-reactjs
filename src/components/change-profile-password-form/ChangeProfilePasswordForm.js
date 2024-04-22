@@ -1,20 +1,23 @@
-import './ChangeProfilePasswordForm.scss';
-import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
-import notify from 'devextreme/ui/notify';
-import Form, { Item, Label } from 'devextreme-react/form';
-import { FormPopup } from '../utils/form-popup/FormPopup';
-import { PasswordTextBox } from '../../components/password-textbox/PasswordTextbox';
+import "./ChangeProfilePasswordForm.scss";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+} from "react";
+import notify from "devextreme/ui/notify";
+import Form, { Item, Label } from "devextreme-react/form";
+import { FormPopup } from "../utils/form-popup/FormPopup";
+import { PasswordTextBox } from "../../components/password-textbox/PasswordTextbox";
+import { updatePassword } from "../../api/user";
+import { getToken } from "../../utils/auth";
 
-const saveNewPassword = () => {
-  notify(
-    {
-      message: "Password Changed",
-      position: { at: "bottom center", my: "bottom center" },
-    },
-    "success"
-  );
-};
-export const ChangeProfilePasswordForm = ({ visible, setVisible }) => {
+export const ChangeProfilePasswordForm = ({
+  visible,
+  setVisible,
+  currentUserId,
+}) => {
   const confirmField = useRef(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -24,6 +27,15 @@ export const ChangeProfilePasswordForm = ({ visible, setVisible }) => {
   const [confirmedPasswordValid, setConfirmedPasswordValid] = useState(false);
   const [isSaveDisabled, setIsSaveDisabled] = useState(true);
 
+  const newPasswordValidators = useMemo(() => {
+    return [
+      {
+        type: "stringLength",
+        message: "Password must be at least 8 characters",
+        min: 8,
+      },
+    ];
+  }, []);
   const confirmPasswordValidators = useMemo(() => {
     return [
       {
@@ -79,6 +91,32 @@ export const ChangeProfilePasswordForm = ({ visible, setVisible }) => {
     [checkConfirm]
   );
 
+  const saveNewPassword = useCallback(
+    async (currentPassword, newPassword, confirmedPassword) => {
+      try {
+        const token = getToken();
+        await updatePassword(
+          currentUserId,
+          currentPassword,
+          newPassword,
+          confirmedPassword,
+          token.access_token
+        );
+        notify(
+          {
+            message: "Password Changed",
+            position: { at: "bottom center", my: "bottom center" },
+          },
+          "success"
+        );
+      } catch (error) {
+        const message = `An error occurred while updating the password:  ${error.message}`;
+        notify(message, "error", 7000);
+      }
+    },
+    [currentUserId]
+  );
+
   return (
     <FormPopup
       title="Change Password"
@@ -87,7 +125,9 @@ export const ChangeProfilePasswordForm = ({ visible, setVisible }) => {
       height={410}
       wrapperAttr={{ class: "change-profile-password-popup" }}
       isSaveDisabled={isSaveDisabled}
-      onSave={saveNewPassword}
+      onSave={() => {
+        saveNewPassword(currentPassword, newPassword, confirmedPassword);
+      }}
       setVisible={setVisible}
     >
       <Form
@@ -115,6 +155,7 @@ export const ChangeProfilePasswordForm = ({ visible, setVisible }) => {
           <PasswordTextBox
             value={newPassword}
             placeholder="Password"
+            validators={newPasswordValidators}
             onValueChange={onNewPasswordChange}
             onValueValidated={onNewPasswordValidated}
           />
