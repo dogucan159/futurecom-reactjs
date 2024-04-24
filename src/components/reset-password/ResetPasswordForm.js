@@ -1,6 +1,6 @@
-import React, { useState, useRef, useCallback } from "react"
+import React, { useState, useRef, useCallback } from "react";
 
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 
 import Form, {
   Item,
@@ -8,40 +8,40 @@ import Form, {
   ButtonItem,
   ButtonOptions,
   RequiredRule,
-  EmailRule
-} from "devextreme-react/form"
-import LoadIndicator from "devextreme-react/load-indicator"
-import notify from "devextreme/ui/notify"
+  EmailRule,
+} from "devextreme-react/form";
+import LoadIndicator from "devextreme-react/load-indicator";
+import notify from "devextreme/ui/notify";
 
-import "./ResetPasswordForm.scss"
-import { resetPassword } from "../../api/auth"
+import "./ResetPasswordForm.scss";
+import { sendResetPasswordMail } from "../../api/auth";
 
 const notificationText =
-  "We've sent a link to reset your password. Check your inbox."
+  "We've sent a link to reset your password. Check your inbox.";
 
 export const ResetPasswordForm = ({ signInLink, buttonLink }) => {
-  const navigate = useNavigate()
-  const [loading, setLoading] = useState(false)
-  const formData = useRef({ email: "", password: "" })
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const formData = useRef({ email: "", password: "" });
 
   const onSubmit = useCallback(
-    async e => {
-      e.preventDefault()
-      const { email } = formData.current
-      setLoading(true)
+    async (e) => {
+      e.preventDefault();
+      const { email } = formData.current;
+      setLoading(true);
 
-      const result = await resetPassword(email)
-      setLoading(false)
+      const result = await sendResetPasswordMail(email);
+      setLoading(false);
 
       if (result.isOk) {
-        navigate(buttonLink)
-        notify(notificationText, "success", 2500)
+        navigate(buttonLink);
+        notify(notificationText, "success", 2500);
       } else {
-        notify(result.message, "error", 2000)
+        notify(result.message, "error", 2000);
       }
     },
-    [navigate]
-  )
+    [navigate, buttonLink]
+  );
 
   return (
     <form className="reset-password-form" onSubmit={onSubmit}>
@@ -76,13 +76,13 @@ export const ResetPasswordForm = ({ signInLink, buttonLink }) => {
         Return to <Link to={signInLink}>Sign In</Link>
       </div>
     </form>
-  )
-}
+  );
+};
 
 const emailEditorOptions = {
   stylingMode: "filled",
   placeholder: "Email",
   mode: "email",
-  value: ""
-}
-const submitButtonAttributes = { class: "submit-button" }
+  value: "",
+};
+const submitButtonAttributes = { class: "submit-button" };

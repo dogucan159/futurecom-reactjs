@@ -165,6 +165,7 @@ export const UserProfilePage = () => {
   const [isContentScrolled, setIsContentScrolled] = useState(false);
   const { selectedUserId } = useParams();
 
+
   const dataChanged = useCallback(() => {
     setIsDataChanged(true);
   }, []);
@@ -186,7 +187,7 @@ export const UserProfilePage = () => {
 
   const onCancel = useCallback(() => {
     setProfileData(savedProfileData);
-    setSavedData();
+    setSavedData(savedProfileData);
     setIsDataChanged(false);
   }, [savedProfileData, setSavedData]);
 
@@ -294,7 +295,6 @@ export const UserProfilePage = () => {
           { dataField: "userFirstName", colSpan: 2, label: "First Name" },
           { dataField: "userLastName", colSpan: 2, label: "Last Name" },
         ];
-
         setBasicInfoItems(basicInfoItems);
         setProfileData(resp.userResult);
         setSavedData(resp.userResult);

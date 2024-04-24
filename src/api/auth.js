@@ -129,34 +129,69 @@ export async function createAccount(email, password) {
   }
 }
 
-export async function changePassword(email, recoveryCode) {
+export async function changePassword(id, newPassword, confirmedPassword) {
   try {
     // Send request
-    console.log(email, recoveryCode);
+    const data = JSON.stringify({
+      userId: id,
+      newPassword,
+      confirmPassword: confirmedPassword,
+    });
+    const response = await fetch(
+      "https://localhost:7224/api/users/ResetUserPassword",
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: data,
+      }
+    );
+
+    if (!response.ok) {
+      const resData = await response.json();
+      throw new Error(`${resData.StatusCode} - ${resData.Message}`);
+    }
 
     return {
       isOk: true,
     };
-  } catch {
+  } catch (error) {
     return {
       isOk: false,
-      message: "Failed to change password",
+      message: error.message,
     };
   }
 }
 
-export async function resetPassword(email) {
+export async function sendResetPasswordMail(email) {
   try {
     // Send request
-    console.log(email);
+    const response = await fetch(
+      `https://localhost:7224/api/users/SendResetUserPasswordMail`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userEmail: email,
+        }),
+      }
+    );
+    if (!response.ok) {
+      const resData = await response.json();
+      throw new Error(`${resData.StatusCode} - ${resData.Message}`);
+    }
 
     return {
       isOk: true,
     };
-  } catch {
+  } catch (error) {
+    console.log(error.message);
     return {
       isOk: false,
-      message: "Failed to reset password",
+      message: error.message,
     };
   }
 }

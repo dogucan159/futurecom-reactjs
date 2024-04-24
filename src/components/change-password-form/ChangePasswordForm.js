@@ -1,5 +1,5 @@
-import React, { useState, useRef, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState, useRef, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Form, {
   Item,
   Label,
@@ -7,32 +7,40 @@ import Form, {
   ButtonOptions,
   RequiredRule,
   CustomRule,
-} from 'devextreme-react/form';
-import LoadIndicator from 'devextreme-react/load-indicator';
-import notify from 'devextreme/ui/notify';
+  StringLengthRule,
+} from "devextreme-react/form";
+import LoadIndicator from "devextreme-react/load-indicator";
+import notify from "devextreme/ui/notify";
 
-import { changePassword } from '../../api/auth';
+import { changePassword } from "../../api/auth";
 
 export default function ChangePasswordForm() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const formData = useRef({ password: '' });
-  const { recoveryCode } = useParams();
+  const formData = useRef({ password: "" });
+  const { userId } = useParams();
 
-  const onSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    const { password } = formData.current;
-    setLoading(true);
+  const onSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      const { password, confirmedPassword } = formData.current;
+      setLoading(true);
 
-    const result = await changePassword(password, recoveryCode);
-    setLoading(false);
+      const result = await changePassword(
+        userId,
+        password,
+        confirmedPassword
+      );
+      setLoading(false);
 
-    if (result.isOk) {
-      navigate('/login');
-    } else {
-      notify(result.message, 'error', 2000);
-    }
-  }, [navigate, recoveryCode]);
+      if (result.isOk) {
+        navigate("/login");
+      } else {
+        notify(result.message, "error", 2000);
+      }
+    },
+    [navigate, userId]
+  );
 
   const confirmPassword = useCallback(
     ({ value }) => value === formData.current.password,
@@ -43,37 +51,41 @@ export default function ChangePasswordForm() {
     <form onSubmit={onSubmit}>
       <Form formData={formData.current} disabled={loading}>
         <Item
-          dataField={'password'}
-          editorType={'dxTextBox'}
+          dataField={"password"}
+          editorType={"dxTextBox"}
           editorOptions={passwordEditorOptions}
         >
           <RequiredRule message="Password is required" />
+          <StringLengthRule
+            message="Password must be at least 8 characters"
+            min={8}
+          />
           <Label visible={false} />
         </Item>
         <Item
-          dataField={'confirmedPassword'}
-          editorType={'dxTextBox'}
+          dataField={"confirmedPassword"}
+          editorType={"dxTextBox"}
           editorOptions={confirmedPasswordEditorOptions}
         >
           <RequiredRule message="Password is required" />
           <CustomRule
-            message={'Passwords do not match'}
+            message={"Passwords do not match"}
             validationCallback={confirmPassword}
           />
           <Label visible={false} />
         </Item>
         <ButtonItem>
           <ButtonOptions
-            width={'100%'}
-            type={'default'}
+            width={"100%"}
+            type={"default"}
             useSubmitBehavior={true}
           >
             <span className="dx-button-text">
-              {
-                loading
-                  ? <LoadIndicator width={'24px'} height={'24px'} visible={true} />
-                  : 'Continue'
-              }
+              {loading ? (
+                <LoadIndicator width={"24px"} height={"24px"} visible={true} />
+              ) : (
+                "Continue"
+              )}
             </span>
           </ButtonOptions>
         </ButtonItem>
@@ -82,5 +94,13 @@ export default function ChangePasswordForm() {
   );
 }
 
-const passwordEditorOptions = { stylingMode: 'filled', placeholder: 'Password', mode: 'password' };
-const confirmedPasswordEditorOptions = { stylingMode: 'filled', placeholder: 'Confirm Password', mode: 'password' };
+const passwordEditorOptions = {
+  stylingMode: "filled",
+  placeholder: "Password",
+  mode: "password",
+};
+const confirmedPasswordEditorOptions = {
+  stylingMode: "filled",
+  placeholder: "Confirm Password",
+  mode: "password",
+};

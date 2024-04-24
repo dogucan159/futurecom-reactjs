@@ -1,13 +1,13 @@
-import "./ProfileCard.scss"
-import React, { useRef } from "react"
+import "./ProfileCard.scss";
+import React, { useRef } from "react";
 import Form, {
   Item,
   Label,
-  ValidationRule as ValidationRuleComponent
-} from "devextreme-react/form"
+  ValidationRule as ValidationRuleComponent,
+} from "devextreme-react/form";
 // import { StatusSelectBox } from "../status-select-box/StatusSelectBox"
 // import { PicturedItemSelectBox } from "../pictured-item-select-box/PicturedItemSelectBox"
-import { useScreenSize, getSizeQualifier } from "../../utils/media-query"
+import { useScreenSize, getSizeQualifier } from "../../utils/media-query";
 
 export const ProfileCard = ({
   items = [],
@@ -16,24 +16,24 @@ export const ProfileCard = ({
   cardData,
   onDataChanged,
   children,
-  wrapperCssClass
+  wrapperCssClass,
 }) => {
-  const { isXSmall } = useScreenSize()
-  const formRef = useRef(null)
-  const onFieldChange = fieldName => value => {
-    const isValid = formRef.current?.instance.validate().isValid
+  const { isXSmall } = useScreenSize();
+  const formRef = useRef(null);
+  const onFieldChange = (fieldName) => (value) => {
+    const isValid = formRef.current?.instance.validate().isValid;
 
     if (!isValid) {
-      return
+      return;
     }
 
     if (fieldName) {
-      cardData[fieldName] = value
+      cardData[fieldName] = value;
     }
 
-    onDataChanged(cardData)
-  }
-  const onFormFieldChange = e => onFieldChange(e.dataField)(e.value)
+    onDataChanged(cardData);
+  };
+  const onFormFieldChange = (e) => onFieldChange(e.dataField)(e.value);
 
   return (
     <div className={wrapperCssClass}>
@@ -59,7 +59,7 @@ export const ProfileCard = ({
                 editorOptions={{
                   stylingMode: "filled",
                   valueChangeEvent: "input",
-                  ...item.editorOptions
+                  ...item.editorOptions,
                 }}
                 colSpan={item.colSpan}
               >
@@ -89,5 +89,5 @@ export const ProfileCard = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

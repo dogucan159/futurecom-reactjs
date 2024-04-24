@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { SingleCard } from './layouts';
-import { LoginForm, ResetPasswordForm, ChangePasswordForm, CreateAccountForm } from './components';
+import { LoginForm, ChangePasswordForm, CreateAccountForm, ResetPasswordForm } from './components';
 
 export const UnauthenticatedContent = () => {
   return (
@@ -11,7 +11,7 @@ export const UnauthenticatedContent = () => {
         element={
           <SingleCard title='Sign In'>
             <LoginForm
-              resetLink='/reset-password'
+              resetLink='/send-reset-password-mail'
               createAccountLink='/create-account'
             />
           </SingleCard>
@@ -29,7 +29,7 @@ export const UnauthenticatedContent = () => {
         }
       />
       <Route
-        path='/reset-password'
+        path='/send-reset-password-mail'
         element={
           <SingleCard
             title='Reset Password'
@@ -43,7 +43,7 @@ export const UnauthenticatedContent = () => {
         }
       />
       <Route
-        path='/change-password/:recoveryCode'
+        path='/change-password/:userId'
         element={
           <SingleCard title='Change Password'>
             <ChangePasswordForm />
