@@ -3,10 +3,8 @@ import DropDownButton from "devextreme-react/drop-down-button"
 import { Template } from "devextreme-react/core/template"
 import { UserMenuSection } from "../user-menu-section/UserMenuSection"
 import "./UserPanel.scss"
-import { useAuth } from "../../contexts/auth"
 
 export const UserPanel = ({ menuMode }) => {
-  const { user } = useAuth()
   const listRef = useRef(null)
 
   const dropDownButtonAttributes = {

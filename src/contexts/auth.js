@@ -6,7 +6,8 @@ import React, {
   useCallback,
 } from "react";
 import { refreshTokenData, signIn as sendSignInRequest } from "../api/auth";
-import { getUser } from "../utils/auth";
+import { getToken, getUser } from "../utils/auth";
+import { partially_update as partially_update_userlog } from "../api/userLog";
 
 function AuthProvider(props) {
   const [user, setUser] = useState();
@@ -26,15 +27,33 @@ function AuthProvider(props) {
       setUser(result.sessionUserData);
       setToken(result.tokenData);
     }
-
     return result;
   }, []);
 
-  const signOut = useCallback(() => {
-    localStorage.removeItem("session-user");
-    localStorage.removeItem("session-token");
-    setUser(undefined);
-    setToken(undefined);
+  const signOut = useCallback(async () => {
+    const data = [
+      {
+        op: "replace",
+        path: "userLogIsSecureLogout",
+        value: "true",
+      },
+    ];
+    const token = getToken();
+    const usr = getUser();
+    const result = await partially_update_userlog(
+      usr.baseEntityId,
+      JSON.stringify(data),
+      token.access_token
+    );
+
+    if (result.isOk) {
+      localStorage.removeItem("session-user");
+      localStorage.removeItem("session-token");
+      setUser(undefined);
+      setToken(undefined);
+    }
+
+    return result;
   }, []);
 
   useEffect(() => {

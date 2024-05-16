@@ -3,26 +3,36 @@ import List from "devextreme-react/list";
 
 import "./UserMenuSection.scss";
 import { useAuth } from "../../contexts/auth";
+import notify from "devextreme/ui/notify";
 
 export const UserMenuSection = ({ showAvatar, listRef }) => {
   const { user, signOut } = useAuth();
+
+  const logOff = useCallback(async () => {
+    console.log("logoff");
+    const result = await signOut();
+
+    if (!result.isOk) {
+      notify(result.message, "error", 2000);
+    }
+  }, [signOut]);
 
   const menuItems = useMemo(
     () => [
       {
         text: "Logout",
         icon: "runner",
-        onClick: signOut,
+        onClick: logOff,
       },
     ],
-    []
+    [logOff]
   );
 
   const listElementAttr = {
     class: "user-info-list",
   };
 
-  const onItemClick = useCallback(({ itemData }) => itemData?.onClick(), []);
+  const onItemClick = useCallback(({ itemData }) => itemData?.onClick, []);
 
   return (
     <>

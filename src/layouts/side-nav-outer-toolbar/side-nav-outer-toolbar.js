@@ -141,19 +141,7 @@ export default function SideNavOuterToolbar({ title, children }) {
     if (result.isOk) {
       setPopupVisible(false);
     } else {
-      const message = result.message;
-      console.log(message);
-      notify(
-        {
-          message,
-          position: {
-            my: "center top",
-            at: "center top",
-          },
-        },
-        "success",
-        3000
-      );
+      notify(result.message, "error", 3000);
     }
   }, [refreshToken]);
 
