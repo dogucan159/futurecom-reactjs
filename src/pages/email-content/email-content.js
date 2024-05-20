@@ -118,10 +118,11 @@ const EmailContentForm = ({ emailContentData }) => {
 const EmailContentFormWithLoadPanel = withLoadPanel(EmailContentForm);
 
 export const EmailContentPage = () => {
-  const [emailContentData, setEmailContentData] = useState();
+  const [emailContentData, setEmailContentData] = useState({
+    baseEntityId: undefined,
+  });
   const [isLoading, setIsLoading] = useState(true);
   const { selectedEmailContentId } = useParams();
-
   useEffect(() => {
     if (selectedEmailContentId) {
       const fetchData = async () => {
@@ -147,6 +148,8 @@ export const EmailContentPage = () => {
         .catch((error) => {
           notify(error.message, "error", 3000);
         });
+    } else {
+      setIsLoading(false);
     }
   }, [selectedEmailContentId]);
 

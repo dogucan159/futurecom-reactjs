@@ -1,4 +1,5 @@
 import { getUserByIdentificationNumber } from "./user";
+import { create as createUserLog } from "./userLog";
 
 export async function refreshTokenData() {
   try {
@@ -90,7 +91,32 @@ export async function signIn(identificationNumber, password) {
       resTokenData.access_token
     );
 
-    localStorage.setItem("session-user", JSON.stringify(resUserData));
+    const userLog = {
+      userLogAction: "S",
+      baseEntitySiteId: resUserData.baseEntitySiteId,
+      userLogActionDateTime: new Date(),
+      userLogUserId: resUserData.baseEntityId,
+    };
+
+    const resUserLogData = await createUserLog(
+      JSON.stringify(userLog),
+      resTokenData.access_token
+    );
+
+    if (!resUserLogData.isOk) {
+      return {
+        isOk: false,
+        message: resUserLogData.message,
+      };
+    }
+
+    localStorage.setItem(
+      "session-user",
+      JSON.stringify({
+        ...resUserData,
+        sessionId: resUserLogData.data.baseEntityId,
+      })
+    );
     const expiration = new Date();
     const hour = resTokenData.expires_in / 3600;
     expiration.setHours(expiration.getHours() + hour);

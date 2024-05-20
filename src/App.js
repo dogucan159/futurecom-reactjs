@@ -9,20 +9,20 @@ import LoadPanel from "devextreme-react/load-panel";
 import { NavigationProvider } from "./contexts/navigation";
 import { AuthProvider, useAuth } from "./contexts/auth";
 import { useScreenSizeClass } from "./utils/media-query";
-import { Content } from './Content';
-import { UnauthenticatedContent } from './UnauthenticatedContent';
-import './components/theme/theme';
+import { Content } from "./Content";
+import { UnauthenticatedContent } from "./UnauthenticatedContent";
+import "./components/theme/theme";
 import { ThemeContext, useThemeContext } from "./components/theme/theme";
+import { ConfirmationModalProvider } from "./contexts/confirmation";
 // import { HomePage, ProfilePage, TasksPage } from "./pages";
 
 function App() {
-  const { user, loading } = useAuth();
+  const { user, token, loading } = useAuth();
 
   if (loading) {
     return <LoadPanel visible={true} />;
   }
-
-  if (user) {
+  if (user && token && token.access_token && token.access_token !== "EXPIRED") {
     return <Content />;
   }
 
@@ -37,9 +37,11 @@ export default function Root() {
       <ThemeContext.Provider value={themeContext}>
         <AuthProvider>
           <NavigationProvider>
-            <div className={`app ${screenSizeClass}`}>
-              <App />
-            </div>
+            <ConfirmationModalProvider>
+              <div className={`app ${screenSizeClass}`}>
+                <App />
+              </div>
+            </ConfirmationModalProvider>
           </NavigationProvider>
         </AuthProvider>
       </ThemeContext.Provider>

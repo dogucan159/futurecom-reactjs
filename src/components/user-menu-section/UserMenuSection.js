@@ -9,7 +9,6 @@ export const UserMenuSection = ({ showAvatar, listRef }) => {
   const { user, signOut } = useAuth();
 
   const logOff = useCallback(async () => {
-    console.log("logoff");
     const result = await signOut();
 
     if (!result.isOk) {

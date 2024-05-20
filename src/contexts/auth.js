@@ -41,7 +41,7 @@ function AuthProvider(props) {
     const token = getToken();
     const usr = getUser();
     const result = await partially_update_userlog(
-      usr.baseEntityId,
+      usr.sessionId,
       JSON.stringify(data),
       token.access_token
     );
