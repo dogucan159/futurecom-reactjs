@@ -16,27 +16,22 @@ export const navigation = [
       {
         text: "User Logs",
         icon: "textdocument",
-        path: "/userlogs",
+        path: "/user-logs",
       },
       {
         text: "Parameters",
         icon: "folder",
         items: [
-          // {
-          //   text: "Config Groups",
-          //   icon: "preferences",
-          //   path: "/config-groups",
-          // },
           {
-            text: "Configs",
+            text: "Settings",
             icon: "preferences",
-            path: "/configs",
-          }, 
+            path: "/app-settings",
+          },
           {
             text: "Email Contents",
             icon: "email",
             path: "/email-contents",
-          }                            
+          },
         ],
       },
     ],

@@ -2,11 +2,10 @@ import {
   create as createItemLog,
   createMulti as createItemLogMulti,
 } from "./itemLog";
-
 export async function getAll(access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/emailContents?orderBy=EmailContentModule`,
+      `https://localhost:7224/api/appSettings?orderBy=AppSettingName`,
       {
         method: "GET",
         headers: {
@@ -22,15 +21,21 @@ export async function getAll(access_token) {
           : `${resData.StatusCode} - ${resData.Message}`
       );
     }
-    return resData;
+    return {
+      isOk: true,
+      data: resData,
+    };
   } catch (error) {
-    throw new Error(error.message);
+    return {
+      isOk: false,
+      message: error.message,
+    };
   }
 }
 
 export async function create(data, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/emailContents", {
+    const response = await fetch("https://localhost:7224/api/appSettings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -50,16 +55,15 @@ export async function create(data, access_token) {
 
     //item log
     const user = JSON.parse(localStorage.getItem("session-user"));
-    const jsonData = JSON.parse(data);
     const itemLog = {
-      itemLogControlName: "EmailContent",
+      itemLogControlName: "AppSetting",
       itemLog_SessionId: user.sessionId,
       itemLog_ItemId: resData.baseEntityId,
       itemLogActionType: "C",
       itemLogActionDate: new Date(),
-      itemLogActionComment: `${resData.emailContentModule} created`,
+      itemLogActionComment: `${resData.appSettingName} created`,
     };
-    const resItemLogData = await createItemLog(
+    await createItemLog(
       JSON.stringify(itemLog),
       access_token
     );
@@ -80,7 +84,7 @@ export async function create(data, access_token) {
 export async function getById(id, access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/emailContents/${id}`,
+      `https://localhost:7224/api/appSettings/${id}`,
       {
         method: "GET",
         headers: {
@@ -105,7 +109,7 @@ export async function getById(id, access_token) {
 
 export async function update(data, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/emailContents", {
+    const response = await fetch("https://localhost:7224/api/appSettings", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -126,12 +130,12 @@ export async function update(data, access_token) {
     const user = JSON.parse(localStorage.getItem("session-user"));
     const jsonData = JSON.parse(data);
     const itemLog = {
-      itemLogControlName: "EmailContent",
+      itemLogControlName: "AppSetting",
       itemLog_SessionId: user.sessionId,
       itemLog_ItemId: jsonData.baseEntityId,
       itemLogActionType: "U",
       itemLogActionDate: new Date(),
-      itemLogActionComment: `${jsonData.emailContentModule} updated`,
+      itemLogActionComment: `${jsonData.appSettingName} updated`,
     };
     const resItemLogData = await createItemLog(
       JSON.stringify(itemLog),
@@ -160,7 +164,7 @@ export async function update(data, access_token) {
 export async function remove(data, access_token) {
   try {
     const response = await fetch(
-      "https://localhost:7224/api/emailContents/DeleteMultipleEmailContents",
+      "https://localhost:7224/api/appSettings/DeleteMultipleAppSettings",
       {
         method: "POST",
         headers: {
@@ -187,7 +191,7 @@ export async function remove(data, access_token) {
     for (let index = 0; index < jsonData.length; index++) {
       const element = jsonData[index];
       const itemLog = {
-        itemLogControlName: "EmailContent",
+        itemLogControlName: "AppSetting",
         itemLog_SessionId: user.sessionId,
         itemLog_ItemId: element,
         itemLogActionType: "D",
@@ -196,7 +200,7 @@ export async function remove(data, access_token) {
       };
       lstItemLog = [...lstItemLog, itemLog];
     }
-    const resItemLogData = await createItemLogMulti(
+    await createItemLogMulti(
       JSON.stringify(lstItemLog),
       access_token
     );

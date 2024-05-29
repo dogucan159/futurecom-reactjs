@@ -37,6 +37,11 @@ function AuthProvider(props) {
         path: "userLogIsSecureLogout",
         value: "true",
       },
+      {
+        op: "replace",
+        path: "UserLogCheckOutTime",
+        value: new Date(),
+      },
     ];
     const token = getToken();
     const usr = getUser();

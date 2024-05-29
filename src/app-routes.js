@@ -3,11 +3,12 @@ import {
   TasksPage,
   UserProfilePage,
   EmailContentPage,
+  EmailContentsPage,
+  UserLogsPage,
+  AppSettingPage,
+  AppSettingsPage,
 } from "./pages";
 import { withNavigationWatcher } from "./contexts/navigation";
-import { ConfigGroupsPage } from "./pages/config-groups/config-groups";
-import { ConfigsPage } from "./pages/configs/configs";
-import { EmailContentsPage } from "./pages/email-contents/email-contents";
 
 const routes = [
   {
@@ -22,17 +23,25 @@ const routes = [
     path: "/tasks",
     element: TasksPage,
   },
-  // {
-  //     path: '/config-groups',
-  //     element: ConfigGroupsPage
-  // },
   {
-    path: "/configs",
-    element: ConfigsPage,
+    path: "/app-settings",
+    element: AppSettingsPage,
   },
   {
     path: "/email-contents",
     element: EmailContentsPage,
+  },
+  {
+    path: "/user-logs",
+    element: UserLogsPage,
+  },
+  {
+    path: "/app-setting/new",
+    element: AppSettingPage,
+  },
+  {
+    path: "/app-setting/:selectedAppSettingId",
+    element: AppSettingPage,
   },
   {
     path: "/email-content/new",

@@ -165,7 +165,6 @@ export const UserProfilePage = () => {
   const [isContentScrolled, setIsContentScrolled] = useState(false);
   const { selectedUserId } = useParams();
 
-
   const dataChanged = useCallback(() => {
     setIsDataChanged(true);
   }, []);
@@ -231,11 +230,23 @@ export const UserProfilePage = () => {
           selectedUserId,
           token.access_token
         );
+        if (!userResult.isOk) {
+          throw new Error(userResult.message);
+        }
         const institutionResult = await getAllInstitutions(token.access_token);
+        if (!institutionResult.isOk) {
+          throw new Error(institutionResult.message);
+        }
         const languageResult = await getAllLanguages(token.access_token);
+        if (!languageResult.isOk) {
+          throw new Error(languageResult.message);
+        }
         const auditorTitleResult = await getAllAuditorTitles(
           token.access_token
         );
+        if (!auditorTitleResult.isOk) {
+          throw new Error(auditorTitleResult.message);
+        }
 
         return {
           userResult,
@@ -263,7 +274,7 @@ export const UserProfilePage = () => {
             colSpan: 1,
             editorOptions: {
               key: "baseEntityId",
-              dataSource: resp.institutionResult,
+              dataSource: resp.institutionResult.data,
               displayExpr: "institutionName",
               valueExpr: "baseEntityId",
             },
@@ -275,7 +286,7 @@ export const UserProfilePage = () => {
             colSpan: 1,
             editorOptions: {
               key: "baseEntityId",
-              dataSource: resp.auditorTitleResult,
+              dataSource: resp.auditorTitleResult.data,
               displayExpr: "auditorTitleCode",
               valueExpr: "baseEntityId",
             },
@@ -287,7 +298,7 @@ export const UserProfilePage = () => {
             colSpan: 1,
             editorOptions: {
               key: "baseEntityId",
-              dataSource: resp.languageResult,
+              dataSource: resp.languageResult.data,
               displayExpr: "languageCode",
               valueExpr: "baseEntityId",
             },
@@ -296,8 +307,8 @@ export const UserProfilePage = () => {
           { dataField: "userLastName", colSpan: 2, label: "Last Name" },
         ];
         setBasicInfoItems(basicInfoItems);
-        setProfileData(resp.userResult);
-        setSavedData(resp.userResult);
+        setProfileData(resp.userResult.data);
+        setSavedData(resp.userResult.data);
         setIsLoading(false);
       })
       .catch((error) => {

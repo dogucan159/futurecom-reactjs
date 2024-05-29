@@ -83,7 +83,10 @@ export async function signIn(identificationNumber, password) {
     const resTokenData = await tokenResponse.json();
 
     if (!tokenResponse.ok) {
-      throw new Error(resTokenData.error_description);
+      return {
+        isOk: false,
+        message: resTokenData.error_description,
+      };
     }
 
     const resUserData = await getUserByIdentificationNumber(
@@ -91,11 +94,18 @@ export async function signIn(identificationNumber, password) {
       resTokenData.access_token
     );
 
+    if (!resUserData.isOk) {
+      return {
+        isOk: false,
+        message: resUserData.message,
+      };
+    }
+
     const userLog = {
       userLogAction: "S",
-      baseEntitySiteId: resUserData.baseEntitySiteId,
+      baseEntitySiteId: resUserData.data.baseEntitySiteId,
       userLogActionDateTime: new Date(),
-      userLogUserId: resUserData.baseEntityId,
+      userLogUserId: resUserData.data.baseEntityId,
     };
 
     const resUserLogData = await createUserLog(
@@ -113,7 +123,7 @@ export async function signIn(identificationNumber, password) {
     localStorage.setItem(
       "session-user",
       JSON.stringify({
-        ...resUserData,
+        ...resUserData.data,
         sessionId: resUserLogData.data.baseEntityId,
       })
     );
@@ -128,7 +138,7 @@ export async function signIn(identificationNumber, password) {
     );
     return {
       isOk: true,
-      sessionUserData: resUserData,
+      sessionUserData: resUserData.data,
       tokenData: resTokenData,
     };
   } catch (error) {

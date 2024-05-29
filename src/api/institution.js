@@ -17,9 +17,15 @@ export async function getAll(access_token) {
           ? "401 - Unauthorized!!!"
           : `${resData.StatusCode} - ${resData.Message}`
       );
-    } 
-    return resData;
+    }
+    return {
+      isOk: true,
+      data: resData,
+    };
   } catch (error) {
-    throw new Error(error.message);
+    return {
+      isOk: false,
+      message: error.message,
+    };
   }
 }

@@ -52,10 +52,18 @@ const EmailContentForm = ({ emailContentData }) => {
     async (e) => {
       e.preventDefault();
       const token = getToken();
-      const result = await updateEmailContent(
-        JSON.stringify(formData.current),
-        token.access_token
-      );
+      let result;
+      if (formData.current.baseEntityId) {
+        result = await updateEmailContent(
+          JSON.stringify(formData.current),
+          token.access_token
+        );
+      } else {
+        result = await createEmailContent(
+          JSON.stringify(formData.current),
+          token.access_token
+        );
+      }
       if (result.isOk) {
         navigate("/email-contents");
       } else {
