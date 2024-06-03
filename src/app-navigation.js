@@ -28,6 +28,11 @@ export const navigation = [
             path: "/app-settings",
           },
           {
+            text: "Localizations",
+            icon: "globe",
+            path: "/localizations",
+          },
+          {
             text: "Email Contents",
             icon: "email",
             path: "/email-contents",

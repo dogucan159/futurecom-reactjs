@@ -7,6 +7,7 @@ import {
   UserLogsPage,
   AppSettingPage,
   AppSettingsPage,
+  LocalizationsPage,
 } from "./pages";
 import { withNavigationWatcher } from "./contexts/navigation";
 
@@ -50,6 +51,10 @@ const routes = [
   {
     path: "/email-content/:selectedEmailContentId",
     element: EmailContentPage,
+  },
+  {
+    path: "/localizations",
+    element: LocalizationsPage,
   },
 ];
 

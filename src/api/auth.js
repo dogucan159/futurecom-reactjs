@@ -1,4 +1,4 @@
-import { getUserByIdentificationNumber } from "./user";
+import { getUserByIdentificationNumber, getUserByIdentificationNumberSpringBoot } from "./user";
 import { create as createUserLog } from "./userLog";
 
 export async function refreshTokenData() {
@@ -93,6 +93,11 @@ export async function signIn(identificationNumber, password) {
       identificationNumber,
       resTokenData.access_token
     );
+
+    // const resUserData = await getUserByIdentificationNumberSpringBoot(
+    //   identificationNumber,
+    //   resTokenData.access_token
+    // );
 
     if (!resUserData.isOk) {
       return {

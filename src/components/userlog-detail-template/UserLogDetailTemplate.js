@@ -21,7 +21,7 @@ const getItemLogs = async (key) => {
     return new DataSource({
       store: new ArrayStore({
         data: result.data,
-        key: "itemLogId",
+        key: "baseEntityId",
       }),
     });
   }
