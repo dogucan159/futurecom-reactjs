@@ -1,6 +1,8 @@
+import { API_ITEMLOGS_PATH, API_URL } from "../constants";
+
 export async function create(data, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/itemlogs", {
+    const response = await fetch(`${API_URL}/${API_ITEMLOGS_PATH}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +34,7 @@ export async function create(data, access_token) {
 export async function createMulti(data, access_token) {
   try {
     const response = await fetch(
-      "https://localhost:7224/api/itemlogs/CreateMultipleItemLogs",
+      `${API_URL}/${API_ITEMLOGS_PATH}/CreateMultipleItemLogs`,
       {
         method: "POST",
         headers: {
@@ -66,7 +68,7 @@ export async function createMulti(data, access_token) {
 export async function getByUserLogId(id, access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/itemLogs/GetItemLogsByUserLogId?userLogId=${id}`,
+      `${API_URL}/${API_ITEMLOGS_PATH}/GetItemLogsByUserLogId?userLogId=${id}`,
       {
         method: "GET",
         headers: {

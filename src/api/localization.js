@@ -1,7 +1,9 @@
+import { API_LOCALIZATIONS_PATH, API_URL } from "../constants";
+
 export async function getAll(access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/localizations?orderBy=BaseEntityCreatedDate desc`,
+      `${API_URL}/${API_LOCALIZATIONS_PATH}?orderBy=BaseEntityCreatedDate desc`,
       {
         method: "GET",
         headers: {
@@ -31,7 +33,7 @@ export async function getAll(access_token) {
 
 export async function create(data, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/localizations", {
+    const response = await fetch(`${API_URL}/${API_LOCALIZATIONS_PATH}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +65,7 @@ export async function create(data, access_token) {
 
 export async function update(id, data, access_token) {
   try {
-    const response = await fetch(`https://localhost:7224/api/localizations`, {
+    const response = await fetch(`${API_URL}/${API_LOCALIZATIONS_PATH}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -94,15 +96,12 @@ export async function update(id, data, access_token) {
 
 export async function remove(id, access_token) {
   try {
-    const response = await fetch(
-      `https://localhost:7224/api/localizations/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/${API_LOCALIZATIONS_PATH}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + access_token,
+      },
+    });
     if (!response.ok) {
       const resData = await response.json();
       throw new Error(

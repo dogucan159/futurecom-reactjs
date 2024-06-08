@@ -1,7 +1,9 @@
+import { API_INSTITUTIONS_PATH, API_URL } from "../constants";
+
 export async function getAll(access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/institutions?orderBy=InstitutionName`,
+      `${API_URL}/${API_INSTITUTIONS_PATH}?orderBy=InstitutionName`,
       {
         method: "GET",
         headers: {

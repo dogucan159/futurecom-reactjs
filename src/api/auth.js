@@ -1,4 +1,7 @@
-import { getUserByIdentificationNumber, getUserByIdentificationNumberSpringBoot } from "./user";
+import { API_URL, API_USERS_PATH, AUTHSERVER_URL } from "../constants";
+import {
+  getUserByIdentificationNumber,
+} from "./user";
 import { create as createUserLog } from "./userLog";
 
 export async function refreshTokenData() {
@@ -19,7 +22,7 @@ export async function refreshTokenData() {
     }
     formBody = formBody.join("&");
 
-    const tokenResponse = await fetch("https://localhost:7272/connect/token", {
+    const tokenResponse = await fetch(`${AUTHSERVER_URL}/connect/token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -72,7 +75,7 @@ export async function signIn(identificationNumber, password) {
     }
     formBody = formBody.join("&");
 
-    const tokenResponse = await fetch("https://localhost:7272/connect/token", {
+    const tokenResponse = await fetch(`${AUTHSERVER_URL}/connect/token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -93,11 +96,6 @@ export async function signIn(identificationNumber, password) {
       identificationNumber,
       resTokenData.access_token
     );
-
-    // const resUserData = await getUserByIdentificationNumberSpringBoot(
-    //   identificationNumber,
-    //   resTokenData.access_token
-    // );
 
     if (!resUserData.isOk) {
       return {
@@ -179,7 +177,7 @@ export async function changePassword(id, newPassword, confirmedPassword) {
       confirmPassword: confirmedPassword,
     });
     const response = await fetch(
-      "https://localhost:7224/api/users/ResetUserPassword",
+      `${API_URL}/${API_USERS_PATH}/ResetUserPassword`,
       {
         method: "PUT",
         headers: {
@@ -209,7 +207,7 @@ export async function sendResetPasswordMail(email) {
   try {
     // Send request
     const response = await fetch(
-      `https://localhost:7224/api/users/SendResetUserPasswordMail`,
+      `${API_URL}/${API_USERS_PATH}/SendResetUserPasswordMail`,
       {
         method: "POST",
         headers: {

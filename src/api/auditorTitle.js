@@ -1,7 +1,9 @@
+import { API_URL, API_AUDITORTITLES_PATH } from "../constants";
+
 export async function getAll(access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/auditorTitles?orderBy=AuditorTitleCode`,
+      `${API_URL}/${API_AUDITORTITLES_PATH}?orderBy=AuditorTitleCode`,
       {
         method: "GET",
         headers: {

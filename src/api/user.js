@@ -1,10 +1,12 @@
+import { API_URL, API_USERS_PATH } from "../constants";
+
 export async function getUserByIdentificationNumber(
   identificationNumber,
   access_token
 ) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/users/${identificationNumber}`,
+      `${API_URL}/${API_USERS_PATH}/${identificationNumber}`,
       {
         method: "GET",
         headers: {
@@ -13,41 +15,6 @@ export async function getUserByIdentificationNumber(
       }
     );
     const resData = await response.json();
-    if (!response.ok) {
-      throw new Error(
-        response.status === 401
-          ? "401 - Unauthorized!!!"
-          : `${resData.StatusCode} - ${resData.Message}`
-      );
-    }
-    return {
-      isOk: true,
-      data: resData,
-    };
-  } catch (error) {
-    return {
-      isOk: false,
-      message: error.message,
-    };
-  }
-}
-
-export async function getUserByIdentificationNumberSpringBoot(
-  identificationNumber,
-  access_token
-) {
-  try {
-    const response = await fetch(
-      `http://192.168.1.105:8080/user/search/findByUserIdentificationNumber?identificationNumber=${identificationNumber}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }
-    );
-    const resData = await response.json();
-    console.log(resData);
     if (!response.ok) {
       throw new Error(
         response.status === 401
@@ -69,7 +36,7 @@ export async function getUserByIdentificationNumberSpringBoot(
 
 export async function getById(id, access_token) {
   try {
-    const response = await fetch(`https://localhost:7224/api/users/${id}`, {
+    const response = await fetch(`${API_URL}/${API_USERS_PATH}/${id}`, {
       method: "GET",
       headers: {
         Authorization: "Bearer " + access_token,
@@ -98,7 +65,7 @@ export async function getById(id, access_token) {
 
 export async function update(user, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/users", {
+    const response = await fetch(`${API_URL}/${API_USERS_PATH}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -134,7 +101,7 @@ export async function updatePassword(
       confirmPassword,
     });
     const response = await fetch(
-      "https://localhost:7224/api/users/UpdateUserPassword",
+      `${API_URL}/${API_USERS_PATH}/UpdateUserPassword`,
       {
         method: "PUT",
         headers: {
@@ -160,7 +127,7 @@ export async function updatePassword(
 export async function getAll(access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/users?orderBy=UserIdentificationNumber`,
+      `${API_URL}/${API_USERS_PATH}?orderBy=UserIdentificationNumber`,
       {
         method: "GET",
         headers: {

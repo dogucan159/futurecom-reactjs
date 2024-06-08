@@ -1,6 +1,8 @@
+import { API_URL, API_USERLOGS_PATH } from "../constants";
+
 export async function create(data, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/userlogs", {
+    const response = await fetch(`${API_URL}/${API_USERLOGS_PATH}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,7 +33,7 @@ export async function create(data, access_token) {
 }
 export async function partially_update(id, data, access_token) {
   try {
-    const response = await fetch(`https://localhost:7224/api/userlogs/${id}`, {
+    const response = await fetch(`${API_URL}/${API_USERLOGS_PATH}/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json-patch+json",
@@ -62,7 +64,7 @@ export async function partially_update(id, data, access_token) {
 export async function getByStartAndFinishDate(sd, fd, access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/userLogs/getAllUserLogsByStartAndFinishDate?startDate=${sd}&finishDate=${fd}&orderBy=UserLogActionDateTime`,
+      `${API_URL}/${API_USERLOGS_PATH}/getAllUserLogsByStartAndFinishDate?startDate=${sd}&finishDate=${fd}&orderBy=UserLogActionDateTime`,
       {
         method: "GET",
         headers: {

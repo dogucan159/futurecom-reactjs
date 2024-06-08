@@ -1,3 +1,4 @@
+import { API_EMAILCONTENTS_PATH, API_URL } from "../constants";
 import {
   create as createItemLog,
   createMulti as createItemLogMulti,
@@ -6,7 +7,7 @@ import {
 export async function getAll(access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/emailContents?orderBy=EmailContentModule`,
+      `${API_URL}/${API_EMAILCONTENTS_PATH}?orderBy=EmailContentModule`,
       {
         method: "GET",
         headers: {
@@ -30,7 +31,7 @@ export async function getAll(access_token) {
 
 export async function create(data, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/emailContents", {
+    const response = await fetch(`${API_URL}/${API_EMAILCONTENTS_PATH}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,15 +80,12 @@ export async function create(data, access_token) {
 
 export async function getById(id, access_token) {
   try {
-    const response = await fetch(
-      `https://localhost:7224/api/emailContents/${id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/${API_EMAILCONTENTS_PATH}/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + access_token,
+      },
+    });
 
     const resData = await response.json();
     if (!response.ok) {
@@ -105,7 +103,7 @@ export async function getById(id, access_token) {
 
 export async function update(data, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/emailContents", {
+    const response = await fetch(`${API_URL}/${API_EMAILCONTENTS_PATH}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -160,7 +158,7 @@ export async function update(data, access_token) {
 export async function remove(data, access_token) {
   try {
     const response = await fetch(
-      "https://localhost:7224/api/emailContents/DeleteMultipleEmailContents",
+      `${API_URL}/${API_EMAILCONTENTS_PATH}/DeleteMultipleEmailContents`,
       {
         method: "POST",
         headers: {

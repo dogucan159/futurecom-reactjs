@@ -1,3 +1,4 @@
+import { API_APPSETTINGS_PATH, API_URL } from "../constants";
 import {
   create as createItemLog,
   createMulti as createItemLogMulti,
@@ -5,7 +6,7 @@ import {
 export async function getAll(access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/appSettings?orderBy=AppSettingName`,
+      `${API_URL}/${API_APPSETTINGS_PATH}?orderBy=AppSettingName`,
       {
         method: "GET",
         headers: {
@@ -35,7 +36,7 @@ export async function getAll(access_token) {
 
 export async function create(data, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/appSettings", {
+    const response = await fetch(`${API_URL}/${API_APPSETTINGS_PATH}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -63,10 +64,7 @@ export async function create(data, access_token) {
       itemLogActionDate: new Date(),
       itemLogActionComment: `${resData.appSettingName} created`,
     };
-    await createItemLog(
-      JSON.stringify(itemLog),
-      access_token
-    );
+    await createItemLog(JSON.stringify(itemLog), access_token);
     //
 
     return {
@@ -83,15 +81,12 @@ export async function create(data, access_token) {
 
 export async function getById(id, access_token) {
   try {
-    const response = await fetch(
-      `https://localhost:7224/api/appSettings/${id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + access_token,
-        },
-      }
-    );
+    const response = await fetch(`${API_URL}/${API_APPSETTINGS_PATH}/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + access_token,
+      },
+    });
 
     const resData = await response.json();
     if (!response.ok) {
@@ -109,7 +104,7 @@ export async function getById(id, access_token) {
 
 export async function update(data, access_token) {
   try {
-    const response = await fetch("https://localhost:7224/api/appSettings", {
+    const response = await fetch(`${API_URL}/${API_APPSETTINGS_PATH}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -164,7 +159,7 @@ export async function update(data, access_token) {
 export async function remove(data, access_token) {
   try {
     const response = await fetch(
-      "https://localhost:7224/api/appSettings/DeleteMultipleAppSettings",
+      `${API_URL}/${API_APPSETTINGS_PATH}/DeleteMultipleAppSettings`,
       {
         method: "POST",
         headers: {
@@ -200,10 +195,7 @@ export async function remove(data, access_token) {
       };
       lstItemLog = [...lstItemLog, itemLog];
     }
-    await createItemLogMulti(
-      JSON.stringify(lstItemLog),
-      access_token
-    );
+    await createItemLogMulti(JSON.stringify(lstItemLog), access_token);
     //
 
     return {

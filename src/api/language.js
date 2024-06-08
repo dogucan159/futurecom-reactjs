@@ -1,7 +1,9 @@
+import { API_LANGUAGES_PATH, API_URL } from "../constants";
+
 export async function getAll(access_token) {
   try {
     const response = await fetch(
-      `https://localhost:7224/api/languages?orderBy=LanguageCode`,
+      `${API_URL}/${API_LANGUAGES_PATH}?orderBy=LanguageCode`,
       {
         method: "GET",
         headers: {
