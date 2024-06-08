@@ -64,6 +64,8 @@ function AuthProvider(props) {
   useEffect(() => {
     const sessionUserData = getUser();
     setUser(sessionUserData);
+    const sessionTokenData = getToken();
+    setToken(sessionTokenData);
     setLoading(false);
   }, []);
 
