@@ -1,7 +1,7 @@
 import "devextreme/dist/css/dx.common.css";
 // import "./themes/generated/theme.base.css";
 // import "./themes/generated/theme.additional.css";
-import React from "react";
+import React, { useEffect } from "react";
 import { HashRouter as Router } from "react-router-dom";
 // import "./dx-styles.scss";
 import "./styles.scss";
@@ -12,8 +12,10 @@ import { useScreenSizeClass } from "./utils/media-query";
 import { Content } from "./Content";
 import { UnauthenticatedContent } from "./UnauthenticatedContent";
 import "./components/theme/theme";
-import { ThemeContext, useThemeContext } from "./components/theme/theme";
 import { ConfirmationModalProvider } from "./contexts/confirmation";
+import { useDispatch, useSelector } from "react-redux";
+import { loadStylesImports } from "./store/theme-actions";
+import { themeActions } from "./store/theme-slice";
 // import { HomePage, ProfilePage, TasksPage } from "./pages";
 
 function App() {
@@ -31,20 +33,29 @@ function App() {
 
 export default function Root() {
   const screenSizeClass = useScreenSizeClass();
-  const themeContext = useThemeContext();
+  const dispatch = useDispatch();
+  const loaded = useSelector((state) => state.theme.isLoaded);
+  const currentTheme = useSelector((state) => state.theme.theme);
+
+  useEffect(() => {
+    dispatch(loadStylesImports());
+  }, [dispatch]);
+
+  useEffect(() => {
+    loaded && dispatch(themeActions.setAppTheme({ newTheme: currentTheme }));
+  }, [loaded, currentTheme, dispatch]);
+
   return (
     <Router>
-      <ThemeContext.Provider value={themeContext}>
-        <AuthProvider>
-          <NavigationProvider>
-            <ConfirmationModalProvider>
-              <div className={`app ${screenSizeClass}`}>
-                <App />
-              </div>
-            </ConfirmationModalProvider>
-          </NavigationProvider>
-        </AuthProvider>
-      </ThemeContext.Provider>
+      <AuthProvider>
+        <NavigationProvider>
+          <ConfirmationModalProvider>
+            <div className={`app ${screenSizeClass}`}>
+              <App />
+            </div>
+          </ConfirmationModalProvider>
+        </NavigationProvider>
+      </AuthProvider>
     </Router>
   );
 }

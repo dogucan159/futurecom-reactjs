@@ -1,22 +1,24 @@
-import React, { useCallback, useContext } from "react"
-import Button from "devextreme-react/button"
-import { ThemeContext } from "../theme/theme"
+import React, { useCallback, useContext } from "react";
+import Button from "devextreme-react/button";
+import { useDispatch, useSelector } from "react-redux";
+import { themeActions } from "../../store/theme-slice";
 
 export const ThemeSwitcher = () => {
-  const themeContext = useContext(ThemeContext)
+  const dispatch = useDispatch();
+  const theme = useSelector((state) => state.theme.theme);
 
   const onButtonClick = useCallback(() => {
-    themeContext?.switchTheme()
-  }, [])
+    dispatch(themeActions.switchTheme());
+  }, [dispatch]);
 
   return (
     <div>
       <Button
         className="theme-button"
         stylingMode="text"
-        icon={`${themeContext?.theme !== "dark" ? "moon" : "sun"}`}
+        icon={`${theme !== "dark" ? "moon" : "sun"}`}
         onClick={onButtonClick}
       />
     </div>
-  )
-}
+  );
+};
