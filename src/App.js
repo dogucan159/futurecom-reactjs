@@ -13,8 +13,8 @@ import { Content } from "./Content";
 import { UnauthenticatedContent } from "./UnauthenticatedContent";
 import { ConfirmationModalProvider } from "./contexts/confirmation";
 import { useDispatch, useSelector } from "react-redux";
-import { loadStylesImports } from "./store/theme-actions";
-import { themeActions } from "./store/theme-slice";
+import { themeActions } from "./store/theme/theme-slice";
+import { loadStylesImports } from "./store/theme/theme-actions";
 // import { HomePage, ProfilePage, TasksPage } from "./pages";
 
 function App() {
