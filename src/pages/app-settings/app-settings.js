@@ -74,8 +74,8 @@ export const AppSettingsPage = () => {
           keyExpr="baseEntityId"
           showBorders
         >
-          <FilterRow visible />
-          <HeaderFilter visible />
+          <FilterRow visible={false} />
+          <HeaderFilter visible={false} />
           <Paging enabled={false} />
 
           <Toolbar>
