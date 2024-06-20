@@ -1,18 +1,16 @@
-import React, { useContext } from "react"
+import React from "react";
 
-import Button from "devextreme-react/button"
+import Button from "devextreme-react/button";
 
-
-import "./LoginOauth.scss"
-import { ThemeContext } from "../theme/theme"
+import "./LoginOauth.scss";
+import { useSelector } from "react-redux";
 
 function getButtonStylingMode(theme) {
-  return theme === "dark" ? "outlined" : "contained"
+  return theme === "dark" ? "outlined" : "contained";
 }
 
 export const LoginOauth = () => {
-  const themeContext = useContext(ThemeContext)
-
+  const currentTheme = useSelector((state) => state.theme.theme);
   return (
     <div className="oauth-button-container">
       <p>or</p>
@@ -20,14 +18,14 @@ export const LoginOauth = () => {
         width="100%"
         icon="icons/google-logo.svg"
         text="Login with Google"
-        stylingMode={getButtonStylingMode(themeContext?.theme)}
+        stylingMode={getButtonStylingMode(currentTheme)}
       />
       <Button
         width="100%"
         icon="icons/microsoft-logo.svg"
         text="Login with Microsoft"
-        stylingMode={getButtonStylingMode(themeContext?.theme)}
+        stylingMode={getButtonStylingMode(currentTheme)}
       />
     </div>
-  )
-}
+  );
+};

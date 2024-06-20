@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useContext } from "react";
+import React, { useState, useRef, useCallback } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -9,15 +9,14 @@ import Form, {
   ButtonItem,
   ButtonOptions,
   RequiredRule,
-  EmailRule,
 } from "devextreme-react/form";
 import LoadIndicator from "devextreme-react/load-indicator";
 import notify from "devextreme/ui/notify";
 
 import "./LoginForm.scss";
 import { useAuth } from "../../contexts/auth";
-import { ThemeContext } from "../theme/theme";
 import { LoginOauth } from "../login-oauth/LoginOauth";
+import { useSelector } from "react-redux";
 
 function getButtonStylingMode(theme) {
   return theme === "dark" ? "outlined" : "contained";
@@ -28,7 +27,7 @@ export const LoginForm = ({ resetLink, createAccountLink }) => {
   const { signIn } = useAuth();
   const [loading, setLoading] = useState(false);
   const formData = useRef({ email: "", password: "" });
-  const themeContext = useContext(ThemeContext);
+  const currentTheme = useSelector((state) => state.theme.theme);
 
   const onSubmit = useCallback(
     async (e) => {
@@ -47,7 +46,7 @@ export const LoginForm = ({ resetLink, createAccountLink }) => {
 
   const onCreateAccountClick = useCallback(() => {
     navigate(createAccountLink);
-  }, [navigate]);
+  }, [navigate, createAccountLink]);
 
   return (
     <form className="login-form" onSubmit={onSubmit}>
@@ -102,7 +101,7 @@ export const LoginForm = ({ resetLink, createAccountLink }) => {
         text="Create an account"
         width="100%"
         onClick={onCreateAccountClick}
-        stylingMode={getButtonStylingMode(themeContext?.theme)}
+        stylingMode={getButtonStylingMode(currentTheme)}
       />
 
       <LoginOauth />
