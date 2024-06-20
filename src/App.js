@@ -11,7 +11,6 @@ import { AuthProvider, useAuth } from "./contexts/auth";
 import { useScreenSizeClass } from "./utils/media-query";
 import { Content } from "./Content";
 import { UnauthenticatedContent } from "./UnauthenticatedContent";
-import "./components/theme/theme";
 import { ConfirmationModalProvider } from "./contexts/confirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { loadStylesImports } from "./store/theme-actions";
