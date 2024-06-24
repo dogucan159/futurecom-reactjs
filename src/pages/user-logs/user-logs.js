@@ -5,7 +5,6 @@ import {
   Lookup,
   MasterDetail,
   Paging,
-  Scrolling,
   Toolbar,
 } from "devextreme-react/data-grid";
 import { useCallback, useEffect, useState } from "react";
@@ -42,7 +41,7 @@ export const UserLogsPage = () => {
       });
   }, []);
 
-  const fetchUserLogs = async () => {
+  const fetchUserLogs = useCallback(async () => {
     const token = getToken();
     const result = await getByStartAndFinishDate(
       formatDate(startDate),
@@ -54,7 +53,7 @@ export const UserLogsPage = () => {
     } else {
       setGridDataSource(result.data);
     }
-  };
+  }, []);
 
   const onStartDateValueChanged = useCallback(
     async (e) => {

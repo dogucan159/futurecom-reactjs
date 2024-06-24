@@ -7,15 +7,16 @@ import "./SideNavigationMenu.scss";
 import * as events from "devextreme/events";
 import Footer from "../footer/Footer";
 import { getUser } from "../../utils/auth";
-import { navigation } from '../../app-navigation';
-import { useNavigation } from "../../contexts/navigation";
+import { navigation } from "../../app-navigation";
 import { useScreenSize } from "../../utils/media-query";
+import { useSelector } from "react-redux";
 
 export const SideNavigationMenu = (props) => {
   const { children, selectedItemChanged, openMenu, compactMode, onMenuReady } =
     props;
 
   const { isLarge } = useScreenSize();
+
   function normalizePath() {
     const user = getUser();
     return navigation.map((item) => ({
@@ -34,11 +35,11 @@ export const SideNavigationMenu = (props) => {
     }));
   }
 
-  const items = useMemo(normalizePath, []);
+  const items = useMemo(normalizePath, [isLarge]);
 
-  const {
-    navigationData: { currentPath },
-  } = useNavigation();
+  const currentPath = useSelector(
+    (state) => state.navigation.navigationData.currentPath
+  );
 
   const treeViewRef = useRef(null);
   const wrapperRef = useRef();

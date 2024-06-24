@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 import { HashRouter as Router } from "react-router-dom";
 // import "./dx-styles.scss";
 import "./styles.scss";
-import { NavigationProvider } from "./contexts/navigation";
 import { useScreenSizeClass } from "./utils/media-query";
 import { Content } from "./Content";
 import { UnauthenticatedContent } from "./UnauthenticatedContent";
@@ -46,13 +45,11 @@ export default function Root() {
 
   return (
     <Router>
-      <NavigationProvider>
-        <ConfirmationModalProvider>
-          <div className={`app ${screenSizeClass}`}>
-            <App />
-          </div>
-        </ConfirmationModalProvider>
-      </NavigationProvider>
+      <ConfirmationModalProvider>
+        <div className={`app ${screenSizeClass}`}>
+          <App />
+        </div>
+      </ConfirmationModalProvider>
     </Router>
   );
 }

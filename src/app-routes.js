@@ -9,7 +9,6 @@ import {
   AppSettingsPage,
   LocalizationsPage,
 } from "./pages";
-import { withNavigationWatcher } from "./contexts/navigation";
 
 const routes = [
   {
@@ -61,6 +60,6 @@ const routes = [
 export default routes.map((route) => {
   return {
     ...route,
-    element: withNavigationWatcher(route.element, route.path),
+    element: route.element,
   };
 });
