@@ -1,7 +1,5 @@
 import { API_URL, API_USERS_PATH, AUTHSERVER_URL } from "../constants";
-import {
-  getUserByIdentificationNumber,
-} from "./user";
+import { getUserByIdentificationNumber } from "./user";
 import { create as createUserLog } from "./userLog";
 
 export async function refreshTokenData() {
@@ -39,7 +37,7 @@ export async function refreshTokenData() {
     const hour = resTokenData.expires_in / 3600;
     expiration.setHours(expiration.getHours() + hour);
     // const expiration = new Date();
-    // expiration.setMinutes(expiration.getMinutes() + 1);
+    // expiration.setMinutes(expiration.getMinutes() + 2);
     localStorage.setItem(
       "session-token",
       JSON.stringify({ ...resTokenData, expiration })
@@ -134,7 +132,7 @@ export async function signIn(identificationNumber, password) {
     const hour = resTokenData.expires_in / 3600;
     expiration.setHours(expiration.getHours() + hour);
     // const expiration = new Date();
-    // expiration.setMinutes(expiration.getMinutes() + 1);
+    // expiration.setMinutes(expiration.getMinutes() + 2);
     localStorage.setItem(
       "session-token",
       JSON.stringify({ ...resTokenData, expiration })

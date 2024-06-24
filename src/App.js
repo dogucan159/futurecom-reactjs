@@ -5,9 +5,7 @@ import React, { useEffect } from "react";
 import { HashRouter as Router } from "react-router-dom";
 // import "./dx-styles.scss";
 import "./styles.scss";
-import LoadPanel from "devextreme-react/load-panel";
 import { NavigationProvider } from "./contexts/navigation";
-import { AuthProvider, useAuth } from "./contexts/auth";
 import { useScreenSizeClass } from "./utils/media-query";
 import { Content } from "./Content";
 import { UnauthenticatedContent } from "./UnauthenticatedContent";
@@ -15,14 +13,16 @@ import { ConfirmationModalProvider } from "./contexts/confirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { themeActions } from "./store/theme/theme-slice";
 import { loadStylesImports } from "./store/theme/theme-actions";
-// import { HomePage, ProfilePage, TasksPage } from "./pages";
 
 function App() {
-  const { user, token, loading } = useAuth();
+  const user = useSelector((state) => state.auth.user);
+  const token = useSelector((state) => state.auth.token);
+  // const loading = useSelector((state) => state.auth.loading);
 
-  if (loading) {
-    return <LoadPanel visible={true} />;
-  }
+  // if (loading) {
+  //   return <LoadPanel visible={true} />;
+  // }
+
   if (user && token && token.access_token && token.access_token !== "EXPIRED") {
     return <Content />;
   }
@@ -46,15 +46,13 @@ export default function Root() {
 
   return (
     <Router>
-      <AuthProvider>
-        <NavigationProvider>
-          <ConfirmationModalProvider>
-            <div className={`app ${screenSizeClass}`}>
-              <App />
-            </div>
-          </ConfirmationModalProvider>
-        </NavigationProvider>
-      </AuthProvider>
+      <NavigationProvider>
+        <ConfirmationModalProvider>
+          <div className={`app ${screenSizeClass}`}>
+            <App />
+          </div>
+        </ConfirmationModalProvider>
+      </NavigationProvider>
     </Router>
   );
 }

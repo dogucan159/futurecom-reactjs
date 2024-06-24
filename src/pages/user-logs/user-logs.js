@@ -4,6 +4,8 @@ import {
   Item,
   Lookup,
   MasterDetail,
+  Paging,
+  Scrolling,
   Toolbar,
 } from "devextreme-react/data-grid";
 import { useCallback, useEffect, useState } from "react";
@@ -108,7 +110,10 @@ export const UserLogsPage = () => {
         dataSource={gridDataSource}
         keyExpr="baseEntityId"
         showBorders
+        height={750}
       >
+        {/* <Scrolling mode="virtual" /> */}
+        <Paging enabled pageSize={10} />
         <Toolbar>
           <Item location="before">
             <div className="dx-field">
