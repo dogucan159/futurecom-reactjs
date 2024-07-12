@@ -3,10 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const confirmationSlice = createSlice({
   name: "confirmation",
   initialState: {
-    showConfirmationModal: false,
-    confirmButtonOptions: {
-        
-    }
+    showConfirmationModal: false
   },
   reducers: {
     setModalVisible(state, action) {

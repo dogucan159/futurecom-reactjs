@@ -1,14 +1,21 @@
 import { Button } from "devextreme-react/button";
-import { useConfirmationModal } from "../../contexts/confirmation";
 import notify from "devextreme/ui/notify";
+import { Fragment, useCallback } from "react";
+import { Popup, ToolbarItem } from "devextreme-react/popup";
+import { useSelector, useDispatch } from "react-redux";
+import { confirmationActions } from "../../store/confirmation/confirmation-slice";
 
 export const DeleteButton = (props) => {
-  const { showConfirmation } = useConfirmationModal();
+  const dispatch = useDispatch();
+
+  const visible = useSelector(
+    (state) => state.confirmation.showConfirmationModal
+  );
+
   const handleOnClick = async () => {
     const selectedRows = props.getSelectedRows();
     if (selectedRows && selectedRows.length > 0) {
-      var result = await showConfirmation();
-      result && props.onClick();
+      dispatch(confirmationActions.setModalVisible({ isVisible: true }));
     } else {
       notify(
         {
@@ -21,9 +28,65 @@ export const DeleteButton = (props) => {
     }
   };
 
+  const handleCancel = useCallback(() => {
+    dispatch(confirmationActions.setModalVisible({ isVisible: false }));
+  }, [dispatch]);
+
+  const getCancelButtonOptions = useCallback(
+    () => ({
+      icon: "close",
+      stylingMode: "contained",
+      text: "Cancel",
+      onClick: handleCancel,
+    }),
+    [handleCancel]
+  );
+
+  const handleOk = useCallback(async () => {
+    await props.onClick();
+    dispatch(confirmationActions.setModalVisible({ isVisible: false }));
+  }, [dispatch, props]);
+
+  const getConfirmButtonOptions = useCallback(
+    () => ({
+      icon: "check",
+      stylingMode: "contained",
+      text: "Confirm",
+      onClick: handleOk,
+    }),
+    [handleOk]
+  );
+
   return (
-    <Button icon="trash" onClick={handleOnClick}>
-      {props.children}
-    </Button>
+    <Fragment>
+      <Button icon="trash" onClick={handleOnClick}>
+        {props.children}
+      </Button>
+      <Popup
+        visible={visible}
+        dragEnabled={false}
+        hideOnOutsideClick={false}
+        showCloseButton={false}
+        showTitle={true}
+        title="Warning"
+        container=".dx-viewport"
+        width={400}
+        height={200}
+      >
+        <ToolbarItem
+          widget="dxButton"
+          toolbar="bottom"
+          location="after"
+          options={getCancelButtonOptions()}
+        />
+        <ToolbarItem
+          widget="dxButton"
+          toolbar="bottom"
+          location="after"
+          options={getConfirmButtonOptions()}
+        />
+        <p>Seçilen kayıtları silmek istediğinizden emin misiniz?</p>
+      </Popup>
+    </Fragment>
   );
 };

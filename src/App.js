@@ -8,7 +8,6 @@ import "./styles.scss";
 import { useScreenSizeClass } from "./utils/media-query";
 import { Content } from "./Content";
 import { UnauthenticatedContent } from "./UnauthenticatedContent";
-import { ConfirmationModalProvider } from "./contexts/confirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { themeActions } from "./store/theme/theme-slice";
 import { loadStylesImports } from "./store/theme/theme-actions";
@@ -45,11 +44,9 @@ export default function Root() {
 
   return (
     <Router>
-      <ConfirmationModalProvider>
-        <div className={`app ${screenSizeClass}`}>
-          <App />
-        </div>
-      </ConfirmationModalProvider>
+      <div className={`app ${screenSizeClass}`}>
+        <App />
+      </div>
     </Router>
   );
 }
