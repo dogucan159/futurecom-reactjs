@@ -1,7 +1,7 @@
-import React, { useCallback, useContext } from "react";
+import React, { useCallback } from "react";
 import Button from "devextreme-react/button";
 import { useDispatch, useSelector } from "react-redux";
-import { themeActions } from "../../store/theme-slice";
+import { themeActions } from "../../store/theme/theme-slice";
 
 export const ThemeSwitcher = () => {
   const dispatch = useDispatch();

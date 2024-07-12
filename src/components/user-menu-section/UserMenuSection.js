@@ -2,19 +2,16 @@ import { useMemo, useCallback } from "react";
 import List from "devextreme-react/list";
 
 import "./UserMenuSection.scss";
-import { useAuth } from "../../contexts/auth";
-import notify from "devextreme/ui/notify";
+import { useDispatch, useSelector } from "react-redux";
+import { signOut } from "../../store/auth/auth-actions";
 
 export const UserMenuSection = ({ showAvatar, listRef }) => {
-  const { user, signOut } = useAuth();
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
 
   const logOff = useCallback(async () => {
-    const result = await signOut();
-
-    if (!result.isOk) {
-      notify(result.message, "error", 2000);
-    }
-  }, [signOut]);
+    dispatch(signOut());
+  }, [dispatch]);
 
   const menuItems = useMemo(
     () => [

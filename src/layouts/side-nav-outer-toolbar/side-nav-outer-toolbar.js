@@ -6,11 +6,12 @@ import "./side-nav-outer-toolbar.scss";
 import { useScreenSize } from "../../utils/media-query";
 import { Template } from "devextreme-react/core/template";
 import { useMenuPatch } from "../../utils/patches";
-import { useAuth } from "../../contexts/auth";
 import { Popup } from "devextreme-react";
 import { ToolbarItem } from "devextreme-react/cjs/data-grid";
-import notify from "devextreme/ui/notify";
 import { getToken, getTokenDuration } from "../../utils/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { refreshToken, signOut } from "../../store/auth/auth-actions";
+import { authActions } from "../../store/auth/auth-slice";
 
 const MenuStatus = {
   Closed: 1,
@@ -44,21 +45,22 @@ export default function SideNavOuterToolbar({ title, children }) {
   const navigate = useNavigate();
   const { isXSmall, isLarge } = useScreenSize();
   const [patchCssClass, onMenuReady] = useMenuPatch();
-  const [popupVisible, setPopupVisible] = useState(false);
-  const { signOut, refreshToken } = useAuth(false);
   const [menuStatus, setMenuStatus] = useState(null);
+
+  const dispatch = useDispatch();
+  const popup = useSelector((state) => state.auth.popupVisible);
 
   useEffect(() => {
     const tokenData = getToken();
     if (tokenData && tokenData.access_token !== "EXPIRED") {
       const tokenDuration = getTokenDuration();
-      console.log(getRemainingTimeText(tokenDuration));
+      console.log(getRemainingTimeText(tokenDuration - 60000));
 
       setTimeout(() => {
-        setPopupVisible(true);
-      }, tokenDuration);
+        dispatch(authActions.setPopupVisible({ isVisible: true }));
+      }, tokenDuration - 60000);
     }
-  }, [popupVisible]);
+  }, [dispatch, popup]);
 
   const getDefaultMenuOpenState = useCallback(
     () => (isLarge ? MenuStatus.Opened : MenuStatus.Closed),
@@ -137,13 +139,8 @@ export default function SideNavOuterToolbar({ title, children }) {
   );
 
   const refreshTokenData = useCallback(async () => {
-    const result = await refreshToken();
-    if (result.isOk) {
-      setPopupVisible(false);
-    } else {
-      notify(result.message, "error", 3000);
-    }
-  }, [refreshToken]);
+    dispatch(refreshToken());
+  }, [dispatch]);
 
   const getRefreshTokenButtonOptions = useCallback(
     () => ({
@@ -155,20 +152,24 @@ export default function SideNavOuterToolbar({ title, children }) {
     [refreshTokenData]
   );
 
+  const logOff = () => {
+    dispatch(signOut());
+  };
+
   const getSignOutButtonOptions = useCallback(
     () => ({
       icon: "runner",
       text: "Logout",
       stylingMode: "outlined",
-      onClick: signOut,
+      onClick: logOff,
     }),
-    [signOut]
+    [logOff]
   );
 
   return (
     <div className={"side-nav-outer-toolbar"}>
       <Popup
-        visible={popupVisible}
+        visible={popup}
         dragEnabled={false}
         hideOnOutsideClick={false}
         showCloseButton={false}

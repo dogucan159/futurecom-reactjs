@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useRef, useCallback } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
@@ -11,12 +11,11 @@ import Form, {
   RequiredRule,
 } from "devextreme-react/form";
 import LoadIndicator from "devextreme-react/load-indicator";
-import notify from "devextreme/ui/notify";
 
 import "./LoginForm.scss";
-import { useAuth } from "../../contexts/auth";
 import { LoginOauth } from "../login-oauth/LoginOauth";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { signIn } from "../../store/auth/auth-actions";
 
 function getButtonStylingMode(theme) {
   return theme === "dark" ? "outlined" : "contained";
@@ -24,24 +23,19 @@ function getButtonStylingMode(theme) {
 
 export const LoginForm = ({ resetLink, createAccountLink }) => {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
-  const [loading, setLoading] = useState(false);
   const formData = useRef({ email: "", password: "" });
   const currentTheme = useSelector((state) => state.theme.theme);
+
+  const loading = useSelector((state) => state.auth.loading);
+  const dispatch = useDispatch();
 
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
       const { identificationNumber, password } = formData.current;
-      setLoading(true);
-
-      const result = await signIn(identificationNumber, password);
-      if (!result.isOk) {
-        setLoading(false);
-        notify(result.message, "error", 2000);
-      }
+      dispatch(signIn(identificationNumber, password));
     },
-    [signIn]
+    [dispatch]
   );
 
   const onCreateAccountClick = useCallback(() => {
