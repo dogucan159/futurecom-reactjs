@@ -34,7 +34,7 @@ export default function ChangePasswordForm() {
       setLoading(false);
 
       if (result.isOk) {
-        navigate("/login");
+        navigate("/");
       } else {
         notify(result.message, "error", 2000);
       }
