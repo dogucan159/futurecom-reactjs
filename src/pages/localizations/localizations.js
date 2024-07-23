@@ -21,69 +21,55 @@ import {
 } from "../../api/localization";
 import { getAll as getLanguages } from "../../api/language";
 import notify from "devextreme/ui/notify";
+import { json, useLoaderData } from "react-router-dom";
 
 export const LocalizationsPage = () => {
   const [gridDataSource, setGridDataSource] = useState();
-  const [languages, setLanguages] = useState();
+
+  const { languages } = useLoaderData();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const token = getToken();
-      const languageResult = await getLanguages(token.access_token);
-      return {
-        languageResult,
-      };
-    };
-    fetchData()
-      .then((resp) => {
-        setLanguages(resp.languageResult.data);
-        setGridDataSource(
-          new DataSource({
-            key: "baseEntityId",
-            load: async () => {
-              const token = getToken();
-              const localizationResult = await getLocalizations(
-                token.access_token
-              );
-              return localizationResult.data;
-            },
-            insert: async (values) => {
-              const postedJsonData = {
-                ...values,
-                baseEntityCreatedDate: new Date(),
-              };
-              const data = JSON.stringify(postedJsonData);
-              const token = getToken();
-              const result = await createLocalization(data, token.access_token);
-              if (!result.isOk) {
-                notify(result.message, "error", 3000);
-              }
-            },
-            update: async (key, values) => {
-              const data = JSON.stringify(values);
-              const token = getToken();
-              const result = await updateLocalization(
-                key,
-                data,
-                token.access_token
-              );
-              if (!result.isOk) {
-                notify(result.message, "error", 3000);
-              }
-            },
-            remove: async (key) => {
-              const token = getToken();
-              const result = await removeLocalization(key, token.access_token);
-              if (!result.isOk) {
-                notify(result.message, "error", 3000);
-              }
-            },
-          })
-        );
+    setGridDataSource(
+      new DataSource({
+        key: "baseEntityId",
+        load: async () => {
+          const token = getToken();
+          const localizationResult = await getLocalizations(token.access_token);
+          return localizationResult.data;
+        },
+        insert: async (values) => {
+          const postedJsonData = {
+            ...values,
+            baseEntityCreatedDate: new Date(),
+          };
+          const data = JSON.stringify(postedJsonData);
+          const token = getToken();
+          const result = await createLocalization(data, token.access_token);
+          if (!result.isOk) {
+            notify(result.message, "error", 3000);
+          }
+        },
+        update: async (key, values) => {
+          const data = JSON.stringify(values);
+          const token = getToken();
+          const result = await updateLocalization(
+            key,
+            data,
+            token.access_token
+          );
+          if (!result.isOk) {
+            notify(result.message, "error", 3000);
+          }
+        },
+        remove: async (key) => {
+          const token = getToken();
+          const result = await removeLocalization(key, token.access_token);
+          if (!result.isOk) {
+            notify(result.message, "error", 3000);
+          }
+        },
       })
-      .catch((error) => {
-        notify(error.message, "error", 2000);
-      });
+    );
   }, []);
 
   const onRowUpdating = (options) => {
@@ -136,3 +122,17 @@ export const LocalizationsPage = () => {
     </>
   );
 };
+
+export async function loader() {
+  const token = getToken();
+  const languageResult = await getLanguages(token.access_token);
+  if (!languageResult.isOk) {
+    throw json(
+      { message: languageResult.message },
+      {
+        status: 500,
+      }
+    );
+  }
+  return { languages: languageResult.data };
+}

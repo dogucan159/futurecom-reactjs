@@ -12,6 +12,8 @@ import { getToken, getTokenDuration } from "../../utils/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { refreshToken, signOut } from "../../store/auth/auth-actions";
 import { authActions } from "../../store/auth/auth-slice";
+import appInfo from "../../app-info";
+import { Outlet } from "react-router-dom";
 
 const MenuStatus = {
   Closed: 1,
@@ -41,7 +43,7 @@ function getRemainingTimeText(diff) {
   return `${hours} saat ${minutes} dakika ${seconds} saniye kaldi...`;
 }
 
-export default function SideNavOuterToolbar({ title, children }) {
+export default function SideNavOuterToolbar() {
   const navigate = useNavigate();
   const { isXSmall, isLarge } = useScreenSize();
   const [patchCssClass, onMenuReady] = useMenuPatch();
@@ -198,7 +200,7 @@ export default function SideNavOuterToolbar({ title, children }) {
         className="layout-header"
         menuToggleEnabled
         toggleMenu={toggleMenu}
-        title={title}
+        title={appInfo.title}
       />
 
       <Drawer
@@ -216,9 +218,10 @@ export default function SideNavOuterToolbar({ title, children }) {
         template="menu"
       >
         <div className={"content"}>
-          {React.Children.map(children, (item) => {
+          {/* {React.Children.map(children, (item) => {
             return item.type !== Footer && item;
-          })}
+          })} */}
+          <Outlet />
         </div>
         <Template name={"menu"}>
           <SideNavigationMenu

@@ -36,7 +36,7 @@ const EmailContentForm = ({ emailContentData }) => {
     text: "Back",
     width: "120px",
     onClick: () => {
-      navigate("/email-contents");
+      navigate("..");
     },
   };
 
@@ -65,7 +65,7 @@ const EmailContentForm = ({ emailContentData }) => {
         );
       }
       if (result.isOk) {
-        navigate("/email-contents");
+        navigate("..");
       } else {
         notify(result.message, "error", 3000);
       }

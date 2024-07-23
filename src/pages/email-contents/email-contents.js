@@ -18,14 +18,12 @@ import {
 
 import { getToken } from "../../utils/auth";
 import { Button } from "devextreme-react/button";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DeleteButton } from "../../components/delete-button/DeleteButton";
 import notify from "devextreme/ui/notify";
 
 const cellRender = (cellData) => (
-  <a href={`/#/email-content/${cellData.data.baseEntityId}`}>
-    {cellData.value}
-  </a>
+  <Link to={`${cellData.data.baseEntityId}`}>{cellData.value}</Link>
 );
 
 export const EmailContentsPage = () => {
@@ -61,7 +59,7 @@ export const EmailContentsPage = () => {
   };
 
   const addNewRow = () => {
-    navigate(`/email-content/new`);
+    navigate(`new`);
   };
 
   const getSelectedRows = () =>
