@@ -36,7 +36,7 @@ const AppSettingForm = ({ appSettingData }) => {
     text: "Back",
     width: "120px",
     onClick: () => {
-      navigate("/app-settings");
+      navigate("..");
     },
   };
 
@@ -65,7 +65,7 @@ const AppSettingForm = ({ appSettingData }) => {
         );
       }
       if (result.isOk) {
-        navigate("/app-settings");
+        navigate("..");
       } else {
         notify(result.message, "error", 3000);
       }

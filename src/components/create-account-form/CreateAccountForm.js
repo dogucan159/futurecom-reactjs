@@ -29,7 +29,7 @@ export default function CreateAccountForm() {
     setLoading(false);
 
     if (result.isOk) {
-      navigate('/login');
+      navigate('/');
     } else {
       notify(result.message, 'error', 2000);
     }
@@ -94,7 +94,7 @@ export default function CreateAccountForm() {
         </ButtonItem>
         <Item>
           <div className={'login-link'}>
-            Have an account? <Link to={'/login'}>Sign In</Link>
+            Have an account? <Link to={'/'}>Sign In</Link>
           </div>
         </Item>
       </Form>

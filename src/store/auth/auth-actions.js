@@ -9,7 +9,7 @@ export const signIn = (identificationNumber, password) => {
     dispatch(authActions.setLoading({ isLoading: true }));
     const result = await sendSignInRequest(identificationNumber, password);
     if (!result.isOk) {
-      dispatch({ isLoading: false });
+      dispatch(authActions.setLoading({ isLoading: false }));
       notify(result.message, "error", 2000);
     } else {
       dispatch(authActions.replaceUser(result));

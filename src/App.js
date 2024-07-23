@@ -43,10 +43,13 @@ export default function Root() {
   }, [loaded, currentTheme, dispatch]);
 
   return (
-    <Router>
-      <div className={`app ${screenSizeClass}`}>
-        <App />
-      </div>
-    </Router>
+    // <Router>
+    //   <div className={`app ${screenSizeClass}`}>
+    //     <App />
+    //   </div>
+    // </Router>
+    <div className={`app ${screenSizeClass}`}>
+      <App />
+    </div>
   );
 }
