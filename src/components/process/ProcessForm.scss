@@ -1,0 +1,60 @@
+@use "../../variables.scss" as *;
+
+:root {
+    --gap-padding: 24px;
+  }
+  
+  .view-host {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  
+    .view-wrapper-scroll {
+      width: 100%;
+      margin-top: calc(var(--content-padding) / 2);
+      max-height: calc(100% - var(--toolbar-height));
+    }
+  }
+
+  .process .view-wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    padding-top: var(--content-padding);
+    max-width: 1200px;
+    margin: 0 auto;
+  
+    & > .dx-toolbar {
+      width: auto;
+      position: relative;
+  
+      &.scrolled {
+        padding-bottom: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+  
+      .dx-button.cancel-button {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .buttons-group {
+    display: flex;
+    width: 100%;
+    justify-content: end;
+  }
+  
+  .buttons-group .dx-item-content {
+    gap: 10px;
+  }
+
+  .login-form {
+    .form-text {
+      color: var(--base-text-color-alpha);
+    }
+  }

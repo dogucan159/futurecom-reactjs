@@ -1,8 +1,10 @@
 import "devextreme/dist/css/dx.common.css";
+// import "devextreme/dist/css/dx.light.css";
+import "devexpress-richedit/dist/dx.richedit.css";
+
 // import "./themes/generated/theme.base.css";
 // import "./themes/generated/theme.additional.css";
 import React, { useEffect } from "react";
-import { HashRouter as Router } from "react-router-dom";
 // import "./dx-styles.scss";
 import "./styles.scss";
 import { useScreenSizeClass } from "./utils/media-query";

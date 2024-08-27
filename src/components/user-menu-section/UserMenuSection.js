@@ -4,14 +4,17 @@ import List from "devextreme-react/list";
 import "./UserMenuSection.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../store/auth/auth-actions";
+import { useNavigate } from "react-router-dom";
 
 export const UserMenuSection = ({ showAvatar, listRef }) => {
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const logOff = useCallback(async () => {
+    navigate("/");
     dispatch(signOut());
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   const menuItems = useMemo(
     () => [

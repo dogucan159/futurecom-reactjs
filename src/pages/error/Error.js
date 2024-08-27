@@ -5,10 +5,11 @@ const ErrorPage = () => {
   const error = useRouteError();
   let title = "An error occurred!";
 
+  console.log(error);
   return (
     <>
       <PageContent title={title}>
-        <p>{error.data.message}</p>
+        <p>{error.data.message ?? error.data}</p>
         <p>
           Back to <Link to="/">Home</Link> page
         </p>

@@ -9,3 +9,4 @@ export const API_LANGUAGES_PATH = "languages";
 export const API_LOCALIZATIONS_PATH = "localizations";
 export const API_USERS_PATH = "users";
 export const API_USERLOGS_PATH = "userLogs";
+export const API_PROCESSES_PATH = "processes";

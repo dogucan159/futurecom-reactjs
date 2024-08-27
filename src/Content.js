@@ -15,6 +15,12 @@ import AppSettingsRootPage from "./pages/app-settings/AppSettingsRoot";
 import EmailContentsRootPage from "./pages/email-contents/EmailContentsRoot";
 import { loader as localizationLoader } from "./pages/localizations/localizations";
 import ErrorPage from "./pages/error/Error";
+import ProcessesRootPage from "./pages/processes/ProcessesRootPage";
+import ProcessesPage from "./pages/processes/Processes";
+import { lazy, Suspense } from "react";
+// import ProcessPage from "./pages/processes/process";
+
+const ProcessPage = lazy(() => import("./pages/processes/process"));
 
 // function withNavigationWatcher(Component, path) {
 //   const WrappedComponent = (props) => {
@@ -107,6 +113,40 @@ export const Content = () => {
           path: "localizations",
           element: <LocalizationsPage />,
           loader: localizationLoader,
+        },
+        {
+          path: "processes",
+          element: <ProcessesRootPage />,
+          children: [
+            {
+              index: true,
+              element: <ProcessesPage />,
+            },
+            {
+              path: ":selectedProcessId",
+              element: (
+                <Suspense fallback={<p>Loading...</p>}>
+                  <ProcessPage />
+                </Suspense>
+              ),
+              loader: (meta) =>
+                import("./pages/processes/process").then((module) =>
+                  module.loader(meta)
+                ),
+            },
+            {
+              path: "new",
+              element: (
+                <Suspense fallback={<p>Loading...</p>}>
+                  <ProcessPage />
+                </Suspense>
+              ),
+              loader: (meta) =>
+                import("./pages/processes/process").then((module) =>
+                  module.loader(meta)
+                ),
+            },
+          ],
         },
       ],
     },

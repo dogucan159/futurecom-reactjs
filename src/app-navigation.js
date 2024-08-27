@@ -11,16 +11,16 @@ export const navigation = [
       {
         text: "Profile",
         icon: "card",
-        path: "/profile",
+        path: "profile",
       },
       {
         text: "User Logs",
         icon: "textdocument",
-        path: "/user-logs",
+        path: "user-logs",
       },
       {
         text: "Parameters",
-        icon: "folder",
+        icon: "toolbox",
         items: [
           {
             text: "Settings",
@@ -30,15 +30,26 @@ export const navigation = [
           {
             text: "Localizations",
             icon: "globe",
-            path: "/localizations",
+            path: "localizations",
           },
           {
             text: "Email Contents",
             icon: "email",
-            path: "/email-contents",
+            path: "email-contents",
           },
         ],
       },
+      {
+        text: "Library",
+        icon: "folder",
+        items : [
+          {
+            text: "Processes",
+            icon: "product",
+            path: "processes"
+          }
+        ]
+      }
     ],
   },
 ];
